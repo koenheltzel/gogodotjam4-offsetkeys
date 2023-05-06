@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=3 uid="uid://dqtubkxp0gleh"]
+
+[ext_resource type="Script" path="res://game/keys.gd" id="2_jdyr7"]
+
+[node name="test_level" type="Node3D"]
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.34038, 0.940288, 0, -0.940288, 0.34038, 4.1825, 5.93827, 3.31613)
+current = true
+
+[node name="SpotLight3D" type="SpotLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -0.298991, 0.954256, 0, -0.954256, -0.298991, 0, 32.4778, -5.47024)
+visible = false
+spot_range = 80.547
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.412266, 0.53015, -0.740931, 0.0529982, 0.797927, 0.60042, 0.909521, -0.286801, 0.300861, 0, 3.13892, 0)
+
+[node name="Keys" type="Node3D" parent="."]
+script = ExtResource("2_jdyr7")
