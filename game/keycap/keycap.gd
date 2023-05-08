@@ -48,3 +48,10 @@ func highlight(color: Color):
 	(self.mesh_instance_3d.material_override as StandardMaterial3D).rim = 0.5
 	(self.mesh_instance_3d.material_override as StandardMaterial3D).rim_tint = 0.5
 	(self.mesh_instance_3d.material_override as StandardMaterial3D).rim_enabled = true
+
+	var timer = Timer.new()
+	timer.wait_time = 0.25
+	timer.one_shot = true
+	timer.autostart = true
+	timer.timeout.connect(self.reset_highlight)
+	self.add_child(timer)

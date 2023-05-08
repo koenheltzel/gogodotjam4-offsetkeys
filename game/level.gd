@@ -9,6 +9,7 @@ const DroppingKeycapScene = preload("res://game/dropping_keycap/dropping_keycap.
 
 func _ready():
 	self.release_letter()
+	self.add_child(Keyboard)
 
 
 func release_letter():

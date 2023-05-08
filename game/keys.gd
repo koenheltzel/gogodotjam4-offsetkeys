@@ -1,20 +1,8 @@
 @tool
 extends Node3D
 
-const KeycapScene = preload("res://game/keycap/keycap.tscn")
-
 
 func _ready():
-	for z in Keyboard.layout:
-		var line: String = Keyboard.layout[z]
-		for x in range(len(line)):
-			var letter: String = line[x]
-			if letter != " ":
-				var keycap: Keycap = KeycapScene.instantiate()
-				keycap.letter = letter
-				keycap.transform.origin.x = x
-				keycap.transform.origin.z = z
-				self.add_child(keycap)
 
 #	var keycap: Keycap = KeycapScene.instantiate()
 #	keycap.letter = "↑"
