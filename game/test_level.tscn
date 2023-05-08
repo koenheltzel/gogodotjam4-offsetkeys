@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://dqtubkxp0gleh"]
+[gd_scene load_steps=4 format=3 uid="uid://dqtubkxp0gleh"]
 
 [ext_resource type="Script" path="res://game/level.gd" id="1_bsx6d"]
 [ext_resource type="Script" path="res://game/keys.gd" id="2_jdyr7"]
+[ext_resource type="PackedScene" uid="uid://bhmgqrga1sp76" path="res://game/dropping_keycap/dropping_keycap.tscn" id="2_rk061"]
 
 [node name="test_level" type="Node3D"]
 script = ExtResource("1_bsx6d")
@@ -21,3 +22,6 @@ transform = Transform3D(0.412266, 0.53015, -0.740931, 0.0529982, 0.797927, 0.600
 
 [node name="Keys" type="Node3D" parent="."]
 script = ExtResource("2_jdyr7")
+
+[node name="dropping_keycap" parent="." instance=ExtResource("2_rk061")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.33653, 0, 0)

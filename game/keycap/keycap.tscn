@@ -17,5 +17,7 @@ mesh = ExtResource("2_kqtwe")
 
 [node name="Label3D" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0.523046, -0.0943903)
-font_size = 64
-outline_size = 20
+modulate = Color(0, 0, 0, 1)
+text = "O"
+font_size = 88
+outline_size = 5

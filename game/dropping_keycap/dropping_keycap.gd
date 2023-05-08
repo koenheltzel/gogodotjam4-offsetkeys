@@ -10,7 +10,7 @@ var y: int = 0
 
 func _ready():
 	self.keycap.letter = self.letter
-	self.keycap.position.y = 5
+	self.keycap.position.y = 15
 	var tween: Tween = self.get_tree().create_tween()
 	tween.tween_property(self.keycap, "position:y", 0.01, 5)
 	tween.finished.connect(self.keycap_dropped)
