@@ -7,6 +7,7 @@ const BOTTOM: float = 0.02
 const CONTROL_BOTTOM: float = 0.25
 var x: int = 0
 var y: int = 0
+var toggled: bool = false
 
 
 func _ready():
@@ -47,7 +48,10 @@ func _process(delta):
 
 
 func _input(event):
-	if self.keycap.position.y >= self.CONTROL_BOTTOM:
+	if event.is_action(self.letter) and not event.is_echo():
+		self.toggled = event.is_action_pressed(self.letter)
+
+	if self.toggled and self.keycap.position.y >= self.CONTROL_BOTTOM:
 		if event.is_action_pressed("move_left", true) and not event.is_echo():
 			self.x -= 1
 		if event.is_action_pressed("move_right", true) and not event.is_echo():

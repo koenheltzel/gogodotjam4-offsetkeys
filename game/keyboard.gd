@@ -9,7 +9,6 @@ func _init():
 
 
 func get_letter_by_position(x, y):
-	print("%d, %d" % [x, y])
 	if not y in self.layout:
 		return ""
 	elif x > len(self.layout[y]) - 1:
