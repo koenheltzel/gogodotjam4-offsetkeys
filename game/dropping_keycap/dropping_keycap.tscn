@@ -1,0 +1,40 @@
+[gd_scene load_steps=5 format=3 uid="uid://bhmgqrga1sp76"]
+
+[ext_resource type="Script" path="res://game/dropping_keycap/dropping_keycap.gd" id="1_74hxj"]
+[ext_resource type="PackedScene" uid="uid://c48h5wpcvhbk5" path="res://game/keycap/keycap.tscn" id="1_hqmdi"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_spidc"]
+shading_mode = 0
+albedo_color = Color(0.454902, 0.00392157, 0.894118, 0.482353)
+refraction_enabled = true
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_6j5at"]
+
+[node name="dropping_keycap" type="Node3D"]
+script = ExtResource("1_74hxj")
+
+[node name="Keycap" parent="." instance=ExtResource("1_hqmdi")]
+
+[node name="Cylinder" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.03, 0, 0, 0, 10, 0, 0, 0, 0.03, -0.4646, 10, -0.471835)
+material_override = SubResource("StandardMaterial3D_spidc")
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_6j5at")
+
+[node name="Cylinder2" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.03, 0, 0, 0, 10, 0, 0, 0, 0.03, 0.466203, 10, -0.471835)
+material_override = SubResource("StandardMaterial3D_spidc")
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_6j5at")
+
+[node name="Cylinder3" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.03, 0, 0, 0, 10, 0, 0, 0, 0.03, -0.4646, 10, 0.483241)
+material_override = SubResource("StandardMaterial3D_spidc")
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_6j5at")
+
+[node name="Cylinder4" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.03, 0, 0, 0, 10, 0, 0, 0, 0.03, 0.466203, 10, 0.483241)
+material_override = SubResource("StandardMaterial3D_spidc")
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_6j5at")
