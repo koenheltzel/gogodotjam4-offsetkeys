@@ -1,25 +1,21 @@
 [gd_scene load_steps=4 format=3 uid="uid://c48h5wpcvhbk5"]
 
 [ext_resource type="Script" path="res://game/keycap/keycap.gd" id="1_pc8mf"]
+[ext_resource type="ArrayMesh" uid="uid://crgt7xp2hnupu" path="res://game/keycap/keycap_model.obj" id="2_kqtwe"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yfqvo"]
-backlight_enabled = true
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ygrd4"]
+albedo_color = Color(0.98, 0.92, 0.84, 1)
 backlight = Color(1, 0, 0, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_r7nbo"]
-material = SubResource("StandardMaterial3D_yfqvo")
-size = Vector3(0.95, 0.3, 0.95)
 
 [node name="keycap" type="Node3D"]
 script = ExtResource("1_pc8mf")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 0)
-mesh = SubResource("BoxMesh_r7nbo")
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_ygrd4")
+mesh = ExtResource("2_kqtwe")
 
 [node name="Label3D" type="Label3D" parent="."]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0.321, 0)
-font_size = 96
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0.523046, -0.0943903)
+font_size = 64
 outline_size = 20
