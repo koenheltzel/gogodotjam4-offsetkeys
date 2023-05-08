@@ -9,8 +9,10 @@ script = ExtResource("1_bsx6d")
 letters = "LESSISMORE"
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.34038, 0.940288, 0, -0.940288, 0.34038, 4.1825, 17.5925, 3.57628)
+transform = Transform3D(1, 0, 0, 0, 0.390731, 0.920505, 0, -0.920505, 0.390731, 4.182, 35, 12.642)
 current = true
+fov = 20.0
+size = 0.001
 
 [node name="SpotLight3D" type="SpotLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -0.298991, 0.954256, 0, -0.954256, -0.298991, 0, 32.4778, -5.47024)
@@ -25,3 +27,4 @@ script = ExtResource("2_jdyr7")
 
 [node name="dropping_keycap" parent="." instance=ExtResource("2_rk061")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.33653, 0, 0)
+visible = false

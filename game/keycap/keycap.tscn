@@ -3,8 +3,8 @@
 [ext_resource type="Script" path="res://game/keycap/keycap.gd" id="1_pc8mf"]
 [ext_resource type="ArrayMesh" uid="uid://crgt7xp2hnupu" path="res://game/keycap/keycap_model.obj" id="2_kqtwe"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dh75d"]
-albedo_color = Color(0.98, 0.92, 0.84, 1)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yckr1"]
+albedo_color = Color(0.980392, 0.921569, 0.843137, 1)
 backlight = Color(1, 0, 0, 1)
 
 [node name="keycap" type="Node3D"]
@@ -12,12 +12,12 @@ script = ExtResource("1_pc8mf")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
-material_override = SubResource("StandardMaterial3D_dh75d")
+material_override = SubResource("StandardMaterial3D_yckr1")
 mesh = ExtResource("2_kqtwe")
 
 [node name="Label3D" type="Label3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0.523046, -0.0943903)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0.50761, -0.0943903)
 modulate = Color(0, 0, 0, 1)
-text = "O"
+text = "W"
 font_size = 88
 outline_size = 5
