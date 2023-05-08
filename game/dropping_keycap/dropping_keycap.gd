@@ -45,8 +45,8 @@ func _process(delta):
 
 
 func _input(event):
-	if not self.locked:
-		if event.is_action(self.letter) and not event.is_echo():
+	if not self.locked and self.letter != "":
+		if InputMap.has_action(self.letter) and event.is_action(self.letter) and not event.is_echo():
 			self.toggled = event.is_action_pressed(self.letter)
 
 		if self.toggled and self.keycap.position.y >= self.CONTROL_BOTTOM:

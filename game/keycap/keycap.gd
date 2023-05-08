@@ -31,7 +31,7 @@ func _input(event) -> void:
 		action_name = self.letter
 
 	if action_name != "":
-		if Input.is_action_pressed(action_name):
+		if InputMap.has_action(action_name) and  Input.is_action_pressed(action_name):
 			self.highlight(Color.LIGHT_BLUE)
 			# self.position.y = -0.25 if Input.is_action_pressed(self.letter) else 0.0
 		else:
