@@ -1,21 +1,35 @@
-[gd_scene load_steps=2 format=3 uid="uid://dqtubkxp0gleh"]
+[gd_scene load_steps=4 format=3 uid="uid://dqtubkxp0gleh"]
 
 [ext_resource type="Script" path="res://game/level.gd" id="1_bsx6d"]
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xsxs1"]
+albedo_color = Color(0.458824, 0.458824, 0.458824, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_686rg"]
+
 [node name="test_level" type="Node3D"]
 script = ExtResource("1_bsx6d")
-letters = "LESSISMORE"
+letters = "LESS IS MORE"
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.390731, 0.920505, 0, -0.920505, 0.390731, 4.182, 35, 12.642)
+transform = Transform3D(1, 0, 0, 0, 0.390731, 0.920505, 0, -0.920505, 0.390731, 4.5, 35, 12.642)
 current = true
 fov = 20.0
 size = 0.001
 
 [node name="SpotLight3D" type="SpotLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -0.298991, 0.954256, 0, -0.954256, -0.298991, 0, 32.4778, -5.47024)
-visible = false
-spot_range = 80.547
+transform = Transform3D(1, 0, 0, 0, -0.298991, 0.954256, 0, -0.954256, -0.298991, 4.5, 10, -5.47)
+spot_range = 12.217
+spot_angle = 12.56
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.412266, 0.53015, -0.740931, 0.0529982, 0.797927, 0.60042, 0.909521, -0.286801, 0.300861, 0, 3.13892, 0)
+
+[node name="SpelledLetters" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 0, 3.82634)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(20, 0, 0, 0, -4.70284, -19.4392, 0, 19.4392, -4.70284, 4.23859, 0, -1.0686)
+visible = false
+material_override = SubResource("StandardMaterial3D_xsxs1")
+mesh = SubResource("PlaneMesh_686rg")

@@ -19,6 +19,7 @@ func _init():
 				self.keycaps[z].append(null)
 			else:
 				var keycap: Keycap = KeycapScene.instantiate()
+				keycap.type = Keycap.Types.LAYOUT
 				keycap.letter = letter
 				keycap.transform.origin.x = x
 				keycap.transform.origin.z = z

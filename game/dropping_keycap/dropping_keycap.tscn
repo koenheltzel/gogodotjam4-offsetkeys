@@ -1,21 +1,37 @@
-[gd_scene load_steps=5 format=3 uid="uid://bhmgqrga1sp76"]
+[gd_scene load_steps=7 format=3 uid="uid://bhmgqrga1sp76"]
 
 [ext_resource type="Script" path="res://game/dropping_keycap/dropping_keycap.gd" id="1_74hxj"]
 [ext_resource type="PackedScene" uid="uid://c48h5wpcvhbk5" path="res://game/keycap/keycap.tscn" id="1_hqmdi"]
 
-[sub_resource type="BoxMesh" id="BoxMesh_gwvt4"]
+[sub_resource type="CanvasTexture" id="CanvasTexture_pd7qq"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_oj2yu"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rq3iv"]
+albedo_color = Color(0.980392, 0.921569, 0.843137, 1)
+emission = Color(1, 0.0352941, 1, 1)
+emission_energy_multiplier = 2.0
+rim = 0.43
+rim_tint = 0.34
+rim_texture = SubResource("CanvasTexture_pd7qq")
+backlight = Color(0.266667, 0.584314, 0.658824, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a7nhn"]
 blend_mode = 1
-albedo_color = Color(0.556863, 1, 0.0235294, 1)
+albedo_color = Color(0, 0.576471, 0.635294, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_gwvt4"]
 
 [node name="dropping_keycap" type="Node3D"]
 script = ExtResource("1_74hxj")
 
 [node name="Keycap" parent="." instance=ExtResource("1_hqmdi")]
 
+[node name="MeshInstance3D" parent="Keycap" index="0"]
+material_override = SubResource("StandardMaterial3D_rq3iv")
+
 [node name="Column" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 15, 0, 0, 0, 1, 0, 7.5, 0)
-transparency = 0.66
+transform = Transform3D(1, 0, 0, 0, 25, 0, 0, 0, 1, 0, 12.5, 0)
+material_override = SubResource("StandardMaterial3D_a7nhn")
+transparency = 0.6
 mesh = SubResource("BoxMesh_gwvt4")
-surface_material_override/0 = SubResource("StandardMaterial3D_oj2yu")
+
+[editable path="Keycap"]
