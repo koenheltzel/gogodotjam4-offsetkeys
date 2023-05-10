@@ -37,11 +37,12 @@ func _input(event) -> void:
 		if self.type == Types.DROPPING and (not first_dropping_keycap_with_letter or not self == first_dropping_keycap_with_letter.keycap):
 			return
 
-		if event.is_action_pressed(self.letter):
-			self.highlight(self.highlight_color, 0)
-			# self.position.y = -0.25 if Input.is_action_pressed(self.letter) else 0.0
-		else:
-			self.reset_highlight()
+		if self.type == Types.DROPPING:
+			if event.is_action_pressed(self.letter):
+				self.highlight(self.highlight_color, 0)
+				# self.position.y = -0.25 if Input.is_action_pressed(self.letter) else 0.0
+			else:
+				self.reset_highlight()
 
 
 func reset_highlight():

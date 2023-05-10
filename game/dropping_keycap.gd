@@ -11,7 +11,7 @@ signal letter_destroyed()
 @export var letter_color: Color
 const BOTTOM: float = 0.03
 const CONTROL_BOTTOM: float = 0.25
-const MIN_COLUMN_ALPHA: float = 0.6
+const MIN_COLUMN_ALPHA: float = 0.8
 const Y_SCALE: float = 2.0
 var x: int = 0
 var y: int = 0
@@ -120,8 +120,17 @@ func _input(event):
 				new_y -= 1
 
 			if not Nodes.keyboard.get_letter_by_position(new_x, new_y) in ["", " "]:
+				var keycap:Keycap = Nodes.keyboard.get_keycap_by_position(self.x, self.y)
+				keycap.reset_highlight()
+
 				self.x = new_x
 				self.y = new_y
+
+				keycap = Nodes.keyboard.get_keycap_by_position(self.x, self.y)
+				if keycap.letter == self.letter:
+					keycap.highlight(Keycap.COLOR_GREEN, 0)
+				else:
+					keycap.highlight(Keycap.COLOR_RED, 0)
 
 func _on_drop_other_letters_extra(dropped_keycap:DroppingKeycap, units: int):
 	if self != dropped_keycap:
