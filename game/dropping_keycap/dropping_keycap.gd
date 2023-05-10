@@ -9,6 +9,7 @@ signal letter_locked(index: int, success: bool)
 @export var letter_color: Color
 const BOTTOM: float = 0.03
 const CONTROL_BOTTOM: float = 0.25
+const MIN_COLUMN_ALPHA: float = 0.6
 var x: int = 0
 var y: int = 0
 var toggled: bool = false
@@ -39,6 +40,7 @@ func drop_unit():
 func _process(delta):
 	self.position.x = self.x
 	self.position.z = self.y
+	self.column.transparency = max(self.MIN_COLUMN_ALPHA, self.keycap.position.y / 15.0)
 
 #	var height: float = self.keycap.position.y
 #	if $Column:
@@ -67,11 +69,18 @@ func _input(event):
 			self.toggled = event.is_action_pressed(self.letter)
 
 		if self.toggled and self.keycap.position.y >= self.CONTROL_BOTTOM:
+			var new_x:int = self.x + 0
+			var new_y:int = self.y + 0
+
 			if event.is_action_pressed("move_left", true):
-				self.x -= 1
+				new_x -= 1
 			if event.is_action_pressed("move_right", true):
-				self.x += 1
+				new_x += 1
 			if event.is_action_pressed("move_down", true):
-				self.y += 1
+				new_y += 1
 			if event.is_action_pressed("move_up", true):
-				self.y -= 1
+				new_y -= 1
+
+			if not Keyboard.get_letter_by_position(new_x, new_y) in ["", " "]:
+				self.x = new_x
+				self.y = new_y

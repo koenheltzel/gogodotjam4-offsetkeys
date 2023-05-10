@@ -30,7 +30,7 @@ func _init():
 func get_letter_by_position(x, y):
 	if not y in self.layout:
 		return ""
-	elif x > len(self.layout[y]) - 1:
+	elif x < 0 or x > len(self.layout[y]) - 1:
 		return ""
 	return self.layout[y][x]
 
@@ -38,6 +38,6 @@ func get_letter_by_position(x, y):
 func get_keycap_by_position(x, y):
 	if not y in self.keycaps:
 		return null
-	elif x > len(self.keycaps[y]) - 1:
+	elif x < 0 or x > len(self.keycaps[y]) - 1:
 		return null
 	return self.keycaps[y][x]

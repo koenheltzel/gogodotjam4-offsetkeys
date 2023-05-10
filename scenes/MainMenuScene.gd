@@ -17,14 +17,14 @@ func _ready() -> void:
 	new_game_button.disabled = game_scene == null
 	settings_button.disabled = settings_scene == null
 	continue_button.visible = SaveGame.has_save() and SaveGame.ENABLED
-	
+
 	# connect signals
 	new_game_button.pressed.connect(_on_play_button_pressed)
 	continue_button.pressed.connect(_on_continue_button_pressed)
 	settings_button.pressed.connect(_on_settings_button_pressed)
 	exit_button.pressed.connect(_on_exit_button_pressed)
 	overlay.on_complete_fade_out.connect(_on_fade_overlay_on_complete_fade_out)
-	
+
 	if continue_button.visible:
 		continue_button.grab_focus()
 	else:
@@ -34,11 +34,11 @@ func _on_settings_button_pressed() -> void:
 	new_game = false
 	next_scene = settings_scene
 	overlay.fade_out()
-	
+
 func _on_play_button_pressed() -> void:
 	next_scene = game_scene
 	overlay.fade_out()
-	
+
 func _on_continue_button_pressed() -> void:
 	new_game = false
 	next_scene = game_scene

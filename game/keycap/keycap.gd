@@ -48,6 +48,10 @@ func reset_highlight():
 
 func highlight(color: Color, duration=0.25):
 #	(self.mesh_instance_3d.material_override as StandardMaterial3D).albedo_color = color #if Input.is_action_pressed(self.letter) else Color.ANTIQUE_WHITE
+#	color.r *= 1.25
+#	color.g *= 1.25
+#	color.b *= 1.25
+#	color.a = 0.75
 	(self.mesh_instance_3d.material_override as StandardMaterial3D).backlight = color
 	(self.mesh_instance_3d.material_override as StandardMaterial3D).backlight_enabled = true
 #	(self.mesh_instance_3d.material_override as StandardMaterial3D).emission = color
