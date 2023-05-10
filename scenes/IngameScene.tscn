@@ -23,6 +23,7 @@ texture = SubResource("ViewportTexture_61nje")
 centered = false
 
 [node name="Game" parent="." groups=["Persist"] instance=ExtResource("4_uujd8")]
+release_speed = 4.0
 
 [node name="UI" type="CanvasLayer" parent="."]
 

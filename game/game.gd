@@ -10,6 +10,7 @@ var letter_color_index: int = 0
 var letter_index: int = 0
 const KeycapScene = preload("res://game/keycap/keycap.tscn")
 const DroppingKeycapScene = preload("res://game/dropping_keycap.tscn")
+var active_dropping_keycaps: Array[DroppingKeycap] = []
 
 
 func _init():
@@ -48,8 +49,10 @@ func release_letter():
 			dropping_key.y = position.y
 			dropping_key.letter_index = self.letter_index
 			dropping_key.letter_color = self.get_next_letter_color()
-			dropping_key.letter_locked.connect(self.show_spelled_letter)
+			dropping_key.letter_locked.connect(self._on_letter_locked)
+			dropping_key.letter_destroyed.connect(self._on_letter_destroyed)
 			self.add_child(dropping_key)
+			self.active_dropping_keycaps.append(dropping_key)
 
 			var timer = Timer.new()
 			timer.wait_time = self.release_speed
@@ -62,10 +65,15 @@ func release_letter():
 			break
 
 
-func show_spelled_letter(index, success):
+func _on_letter_destroyed(dropping_keycap: DroppingKeycap):
+	pass
+
+
+func _on_letter_locked(dropping_keycap: DroppingKeycap, index, success):
 	var keycap: Keycap = self.spelled_letters[index]
 	keycap.visible = true
 	keycap.highlight(Keycap.COLOR_GREEN if success else Keycap.COLOR_RED, 0)
+	self.active_dropping_keycaps.erase(dropping_keycap)
 
 
 func get_next_letter_color():
@@ -93,3 +101,17 @@ func get_random_start_position(letter: String, min_spaces: int, max_spaces: int,
 		var start_letter:String = Nodes.keyboard.get_letter_by_position(new_position.x, new_position.y)
 		if not start_letter in ["", " "] and new_position != old_position:
 			return new_position
+
+
+func is_first_dropping_keycap(dropping_keycap: DroppingKeycap):
+	return dropping_keycap == self.active_dropping_keycaps[0]
+
+
+func get_first_dropping_keycap_with_letter(letter: String) -> DroppingKeycap:
+	for tmp_dropping_keycap in self.active_dropping_keycaps:
+		if letter == tmp_dropping_keycap.letter:
+			return tmp_dropping_keycap
+	return null
+
+func is_first_dropping_keycap_with_letter(dropping_keycap: DroppingKeycap):
+	return self.get_first_dropping_keycap_with_letter(dropping_keycap.letter) == dropping_keycap

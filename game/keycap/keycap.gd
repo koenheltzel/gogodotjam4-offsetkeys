@@ -32,6 +32,10 @@ func _process(delta):
 
 func _input(event) -> void:
 	if (self.type == Types.LAYOUT or self.type == Types.DROPPING) and InputMap.has_action(self.letter) and event.is_action(self.letter) and not event.is_echo():
+		# Dirty check: we only want to highlight the first dropping keycap with the pressed letter.
+		if self.type == Types.DROPPING and not self == Nodes.game.get_first_dropping_keycap_with_letter(self.letter).keycap:
+			return
+
 		if event.is_action_pressed(self.letter):
 			self.highlight(self.highlight_color, 0)
 			# self.position.y = -0.25 if Input.is_action_pressed(self.letter) else 0.0

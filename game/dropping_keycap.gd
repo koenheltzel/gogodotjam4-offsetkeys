@@ -1,6 +1,8 @@
+class_name DroppingKeycap
 extends Node3D
 
-signal letter_locked(index: int, success: bool)
+signal letter_locked(dropping_keycap: DroppingKeycap, index: int, success: bool)
+signal letter_destroyed()
 @onready var keycap: Keycap = $Keycap
 @onready var column: MeshInstance3D = $Column
 
@@ -12,8 +14,9 @@ const CONTROL_BOTTOM: float = 0.25
 const MIN_COLUMN_ALPHA: float = 0.6
 var x: int = 0
 var y: int = 0
-var toggled: bool = false
+var selected: bool = false
 var locked: bool = false
+var tween: Tween
 
 
 func _ready():
@@ -27,13 +30,21 @@ func _ready():
 #	(self.column.mesh.surface_get_material(0) as StandardMaterial3D).albedo_color = self.letter_color
 
 
-func drop_unit():
-	if self.keycap.position.y > self.BOTTOM:
-		var tween = self.get_tree().create_tween()
-		tween.set_trans(Tween.TRANS_BOUNCE)
-		tween.tween_property(self.keycap, "position:y", self.keycap.position.y - 1 if self.keycap.position.y > 1 else 0.03, 0.8).set_trans(Tween.TRANS_BOUNCE if self.keycap.position.y > 1 else Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
-		tween.finished.connect(self.drop_unit)
+func drop_unit(all_the_way=false):
+	if self.keycap.position.y > self.BOTTOM or all_the_way:
+		if self.tween:
+			self.tween.kill()
+		self.tween = self.get_tree().create_tween()
+		self.tween.set_trans(Tween.TRANS_BOUNCE)
+		var target_y:int
+		if all_the_way or self.keycap.position.y <= 1:
+			target_y = self.BOTTOM
+		else:
+			target_y = self.keycap.position.y - 1
+		self.tween.tween_property(self.keycap, "position:y", target_y, 0.8).set_trans(Tween.TRANS_BOUNCE if self.keycap.position.y > 1 else Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+		self.tween.finished.connect(self.drop_unit)
 	else:
+		self.letter_destroyed.emit(self)
 		self.queue_free()
 
 
@@ -48,8 +59,10 @@ func _process(delta):
 #		$Column.position.y = height / 2.0
 
 	if not self.locked and self.keycap.position.y < self.CONTROL_BOTTOM:
-		self.locked = true
+		self.lock()
 
+func lock():
+		self.locked = true
 		$Column.visible = false
 
 		var success: bool = self.letter == Nodes.keyboard.get_letter_by_position(self.x, self.y)
@@ -60,15 +73,19 @@ func _process(delta):
 			Nodes.keyboard.get_keycap_by_position(self.x, self.y).highlight(Keycap.COLOR_RED)
 			self.keycap.highlight(Keycap.COLOR_RED)
 
-		self.letter_locked.emit(self.letter_index, success)
+		self.letter_locked.emit(self, self.letter_index, success)
 
 
 func _input(event):
 	if not self.locked and self.letter != "" and not event.is_echo():
-		if InputMap.has_action(self.letter) and event.is_action(self.letter):
-			self.toggled = event.is_action_pressed(self.letter)
+		if InputMap.has_action(self.letter) and event.is_action(self.letter) and Nodes.game.is_first_dropping_keycap_with_letter(self):
+			self.selected = event.is_action_pressed(self.letter)
 
-		if self.toggled and self.keycap.position.y >= self.CONTROL_BOTTOM:
+			if not self.selected and Nodes.game.is_first_dropping_keycap(self):
+				self.drop_unit(true)
+				self.lock()
+
+		if not self.locked and self.selected and self.keycap.position.y >= self.CONTROL_BOTTOM and Nodes.game.is_first_dropping_keycap_with_letter(self):
 			var new_x:int = self.x + 0
 			var new_y:int = self.y + 0
 
