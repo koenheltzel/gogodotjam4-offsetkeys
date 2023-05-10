@@ -14,6 +14,7 @@ const DroppingKeycapScene = preload("res://game/dropping_keycap/dropping_keycap.
 
 func _ready():
 	self.release_letter()
+	Keyboard.get_parent().remove_child(Keyboard)
 	self.add_child(Keyboard)
 
 	for i in range(self.letters.length()):
