@@ -6,8 +6,8 @@ extends Node3D
 var spelled_letters: Array = []
 var letter_colors: Array = [Color.CORNFLOWER_BLUE] #Keycap.COLOR_ORANGE, Keycap.COLOR_LIGHT_ORANGE, Keycap.COLOR_YELLOW, Keycap.COLOR_BLUE
 var letter_color_index: int = 0
+signal drop_other_letters_extra(units: int)
 
-var letter_index: int = 0
 const KeycapScene = preload("res://game/keycap/keycap.tscn")
 const DroppingKeycapScene = preload("res://game/dropping_keycap.tscn")
 var active_dropping_keycaps: Array[DroppingKeycap] = []
@@ -18,10 +18,9 @@ func _init():
 
 
 func _ready():
-	self.release_letter()
-
-	for i in range(self.letters.length()):
-		var letter: String = self.letters[i]
+	var i: int = 0
+	var letter_count: int = 0
+	for letter in self.letters:
 		if letter != " ":
 			var keycap: Keycap = KeycapScene.instantiate()
 			keycap.type = Keycap.Types.SPELLED
@@ -30,39 +29,25 @@ func _ready():
 			keycap.visible = false
 			$SpelledLetters.add_child(keycap)
 			self.spelled_letters.append(keycap)
-		else:
-			self.spelled_letters.append(null)
-	$SpelledLetters.scale = Vector3(0.75, 0.75, 0.75)
-	$SpelledLetters.position.x -= self.letters.length() / 2.0
 
-
-func release_letter():
-	while letter_index < self.letters.length():
-		var letter = self.letters[self.letter_index]
-		if letter == " ":
-			self.letter_index += 1
-		else:
-			var position = self.get_random_start_position(letter, 0, 3, [])
+			var position = self.get_random_start_position(letter, 0, 1, [])
 			var dropping_key = DroppingKeycapScene.instantiate()
 			dropping_key.letter = letter
 			dropping_key.x = position.x
 			dropping_key.y = position.y
-			dropping_key.letter_index = self.letter_index
+			dropping_key.letter_index = i
 			dropping_key.letter_color = self.get_next_letter_color()
 			dropping_key.letter_locked.connect(self._on_letter_locked)
 			dropping_key.letter_destroyed.connect(self._on_letter_destroyed)
+			dropping_key.start_y_position = 15 + letter_count * 4
 			self.add_child(dropping_key)
 			self.active_dropping_keycaps.append(dropping_key)
-
-			var timer = Timer.new()
-			timer.wait_time = self.release_speed
-			timer.one_shot = true
-			timer.autostart = true
-			timer.timeout.connect(self.release_letter)
-			self.add_child(timer)
-
-			self.letter_index += 1
-			break
+			letter_count += 1
+		else:
+			self.spelled_letters.append(null)
+		i += 1
+	$SpelledLetters.scale = Vector3(0.75, 0.75, 0.75)
+	$SpelledLetters.position.x -= self.letters.length() / 2.0
 
 
 func _on_letter_destroyed(dropping_keycap: DroppingKeycap):

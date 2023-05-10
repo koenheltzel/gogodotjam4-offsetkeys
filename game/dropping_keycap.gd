@@ -14,18 +14,22 @@ const CONTROL_BOTTOM: float = 0.25
 const MIN_COLUMN_ALPHA: float = 0.6
 var x: int = 0
 var y: int = 0
+var drop_extra_distance: int = 0
 var selected: bool = false
 var locked: bool = false
 var tween: Tween
+var start_y_position: int = 0
+
 
 
 func _ready():
 	self.keycap.letter = self.letter
 	self.keycap.highlight_color = self.letter_color
-	self.keycap.position.y = 15
+	self.keycap.position.y = self.start_y_position
 	self.drop_unit()
 	self.column.material_override = self.column.material_override.duplicate(true)
 	(self.column.material_override as StandardMaterial3D).albedo_color = self.letter_color
+	Nodes.game.drop_other_letters_extra.connect(self._on_drop_other_letters_extra)
 #	self.column.mesh.surface_set_material(0, self.column.mesh.surface_get_material(0).duplicate(true))
 #	(self.column.mesh.surface_get_material(0) as StandardMaterial3D).albedo_color = self.letter_color
 
@@ -37,11 +41,18 @@ func drop_unit(all_the_way=false):
 		self.tween = self.get_tree().create_tween()
 		self.tween.set_trans(Tween.TRANS_BOUNCE)
 		var target_y:int
-		if all_the_way or self.keycap.position.y <= 1:
+
+		var distance:int = 1
+		if self.drop_extra_distance > 0:
+			distance = min(self.keycap.position.y, 1 + self.drop_extra_distance)
+			print("self.drop_extra_distance: %d   current y: %d  distance: %d" % [self.drop_extra_distance, self.keycap.position.y, distance])
+			self.drop_extra_distance = 0
+
+		if all_the_way or self.keycap.position.y <= distance:
 			target_y = self.BOTTOM
 		else:
-			target_y = self.keycap.position.y - 1
-		self.tween.tween_property(self.keycap, "position:y", target_y, 0.7).set_trans(Tween.TRANS_BOUNCE if self.keycap.position.y > 1 and not all_the_way else Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+			target_y = self.keycap.position.y - distance
+		self.tween.tween_property(self.keycap, "position:y", target_y, 0.7).set_trans(Tween.TRANS_BOUNCE if self.keycap.position.y > distance and not all_the_way else Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
 		self.tween.finished.connect(self.drop_unit)
 	else:
 		self.letter_destroyed.emit(self)
@@ -62,18 +73,18 @@ func _process(delta):
 		self.lock()
 
 func lock():
-		self.locked = true
-		$Column.visible = false
+	self.locked = true
+	$Column.visible = false
 
-		var success: bool = self.letter == Nodes.keyboard.get_letter_by_position(self.x, self.y)
-		if success:
-			Nodes.keyboard.get_keycap_by_position(self.x, self.y).highlight(Keycap.COLOR_GREEN)
-			self.keycap.highlight(Keycap.COLOR_GREEN)
-		else:
-			Nodes.keyboard.get_keycap_by_position(self.x, self.y).highlight(Keycap.COLOR_RED)
-			self.keycap.highlight(Keycap.COLOR_RED)
+	var success: bool = self.letter == Nodes.keyboard.get_letter_by_position(self.x, self.y)
+	if success:
+		Nodes.keyboard.get_keycap_by_position(self.x, self.y).highlight(Keycap.COLOR_GREEN)
+		self.keycap.highlight(Keycap.COLOR_GREEN)
+	else:
+		Nodes.keyboard.get_keycap_by_position(self.x, self.y).highlight(Keycap.COLOR_RED)
+		self.keycap.highlight(Keycap.COLOR_RED)
 
-		self.letter_locked.emit(self, self.letter_index, success)
+	self.letter_locked.emit(self, self.letter_index, success)
 
 
 func _input(event):
@@ -84,6 +95,7 @@ func _input(event):
 			if not self.selected and Nodes.game.is_first_dropping_keycap(self):
 				self.drop_unit(true)
 				self.lock()
+				Nodes.game.drop_other_letters_extra.emit(self, floor(self.keycap.position.y))
 
 		if not self.locked and self.selected and self.keycap.position.y >= self.CONTROL_BOTTOM and Nodes.game.is_first_dropping_keycap_with_letter(self):
 			var new_x:int = self.x + 0
@@ -101,3 +113,7 @@ func _input(event):
 			if not Nodes.keyboard.get_letter_by_position(new_x, new_y) in ["", " "]:
 				self.x = new_x
 				self.y = new_y
+
+func _on_drop_other_letters_extra(dropped_keycap:DroppingKeycap, units: int):
+	if self != dropped_keycap:
+		self.drop_extra_distance = units - 1
