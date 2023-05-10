@@ -1,4 +1,4 @@
-extends Node2D
+extends Node3D
 
 @onready var fade_overlay = %FadeOverlay
 @onready var pause_overlay = %PauseOverlay
