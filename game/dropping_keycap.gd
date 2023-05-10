@@ -12,7 +12,7 @@ signal letter_destroyed()
 const BOTTOM: float = 0.03
 const CONTROL_BOTTOM: float = 0.25
 const MIN_COLUMN_ALPHA: float = 0.8
-const Y_SCALE: float = 2.0
+const Y_SCALE: float = 1.5
 var x: int = 0
 var y: int = 0
 var drop_extra_distance: int = 0
@@ -26,7 +26,6 @@ var y_position: float:
 	set(value):
 		y_position = value
 		keycap.position.y = value * Y_SCALE
-
 
 
 func _ready():
@@ -47,7 +46,7 @@ func drop_unit(all_the_way=false):
 		if self.tween:
 			self.tween.kill()
 		self.tween = self.get_tree().create_tween()
-		self.tween.set_trans(Tween.TRANS_BOUNCE)
+#		self.tween.set_trans(Tween.TRANS_BOUNCE)
 		var target_y:int
 
 		var distance:int = 1
@@ -60,7 +59,8 @@ func drop_unit(all_the_way=false):
 			target_y = self.BOTTOM
 		else:
 			target_y = self.y_position - distance
-		self.tween.tween_property(self, "y_position", target_y, 0.7).set_trans(Tween.TRANS_BOUNCE if self.y_position > distance and not all_the_way else Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+
+		self.tween.tween_property(self, "y_position", target_y, 0.7).set_trans(Tween.TRANS_LINEAR if self.y_position > distance and not all_the_way else Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
 		self.tween.finished.connect(self.drop_unit)
 	else:
 		self.letter_destroyed.emit(self)
@@ -80,6 +80,7 @@ func _process(delta):
 
 	if not self.locked and self.y_position < self.CONTROL_BOTTOM:
 		self.lock()
+
 
 func lock():
 	self.locked = true
@@ -132,6 +133,7 @@ func _input(event):
 				else:
 					keycap.highlight(Keycap.COLOR_RED, 0)
 
+
 func _on_drop_other_letters_extra(dropped_keycap:DroppingKeycap, units: int):
 	if self != dropped_keycap:
-		self.drop_extra_distance = units - 1
+		self.drop_extra_distance = 0 # units - 1

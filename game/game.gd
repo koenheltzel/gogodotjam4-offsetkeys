@@ -39,7 +39,7 @@ func _ready():
 			dropping_key.letter_color = self.get_next_letter_color()
 			dropping_key.letter_locked.connect(self._on_letter_locked)
 			dropping_key.letter_destroyed.connect(self._on_letter_destroyed)
-			dropping_key.start_y_position = 15 + letter_count * 4
+			dropping_key.start_y_position = 10 + letter_count * 3
 			self.add_child(dropping_key)
 			self.active_dropping_keycaps.append(dropping_key)
 			letter_count += 1
