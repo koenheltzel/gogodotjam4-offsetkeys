@@ -41,7 +41,7 @@ func drop_unit(all_the_way=false):
 			target_y = self.BOTTOM
 		else:
 			target_y = self.keycap.position.y - 1
-		self.tween.tween_property(self.keycap, "position:y", target_y, 0.8).set_trans(Tween.TRANS_BOUNCE if self.keycap.position.y > 1 else Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+		self.tween.tween_property(self.keycap, "position:y", target_y, 0.7).set_trans(Tween.TRANS_BOUNCE if self.keycap.position.y > 1 and not all_the_way else Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
 		self.tween.finished.connect(self.drop_unit)
 	else:
 		self.letter_destroyed.emit(self)
