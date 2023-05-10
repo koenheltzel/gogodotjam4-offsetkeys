@@ -12,6 +12,7 @@ signal letter_destroyed()
 const BOTTOM: float = 0.03
 const CONTROL_BOTTOM: float = 0.25
 const MIN_COLUMN_ALPHA: float = 0.6
+const Y_SCALE: float = 2.0
 var x: int = 0
 var y: int = 0
 var drop_extra_distance: int = 0
@@ -19,23 +20,30 @@ var selected: bool = false
 var locked: bool = false
 var tween: Tween
 var start_y_position: int = 0
+var y_position: float:
+	get:
+		return y_position
+	set(value):
+		y_position = value
+		keycap.position.y = value * Y_SCALE
 
 
 
 func _ready():
 	self.keycap.letter = self.letter
 	self.keycap.highlight_color = self.letter_color
-	self.keycap.position.y = self.start_y_position
+	self.y_position = self.start_y_position
 	self.drop_unit()
 	self.column.material_override = self.column.material_override.duplicate(true)
 	(self.column.material_override as StandardMaterial3D).albedo_color = self.letter_color
+	self.column.transparency = 1.0
 	Nodes.game.drop_other_letters_extra.connect(self._on_drop_other_letters_extra)
 #	self.column.mesh.surface_set_material(0, self.column.mesh.surface_get_material(0).duplicate(true))
 #	(self.column.mesh.surface_get_material(0) as StandardMaterial3D).albedo_color = self.letter_color
 
 
 func drop_unit(all_the_way=false):
-	if self.keycap.position.y > self.BOTTOM or all_the_way:
+	if self.y_position > self.BOTTOM or all_the_way:
 		if self.tween:
 			self.tween.kill()
 		self.tween = self.get_tree().create_tween()
@@ -44,15 +52,15 @@ func drop_unit(all_the_way=false):
 
 		var distance:int = 1
 		if self.drop_extra_distance > 0:
-			distance = min(self.keycap.position.y, 1 + self.drop_extra_distance)
-			print("self.drop_extra_distance: %d   current y: %d  distance: %d" % [self.drop_extra_distance, self.keycap.position.y, distance])
+			distance = min(self.y_position, 1 + self.drop_extra_distance)
+			print("self.drop_extra_distance: %d   current y: %d  distance: %d" % [self.drop_extra_distance, self.y_position, distance])
 			self.drop_extra_distance = 0
 
-		if all_the_way or self.keycap.position.y <= distance:
+		if all_the_way or self.y_position <= distance:
 			target_y = self.BOTTOM
 		else:
-			target_y = self.keycap.position.y - distance
-		self.tween.tween_property(self.keycap, "position:y", target_y, 0.7).set_trans(Tween.TRANS_BOUNCE if self.keycap.position.y > distance and not all_the_way else Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+			target_y = self.y_position - distance
+		self.tween.tween_property(self, "y_position", target_y, 0.7).set_trans(Tween.TRANS_BOUNCE if self.y_position > distance and not all_the_way else Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
 		self.tween.finished.connect(self.drop_unit)
 	else:
 		self.letter_destroyed.emit(self)
@@ -62,14 +70,15 @@ func drop_unit(all_the_way=false):
 func _process(delta):
 	self.position.x = self.x
 	self.position.z = self.y
-	self.column.transparency = max(self.MIN_COLUMN_ALPHA, self.keycap.position.y / 15.0)
+	if Nodes.game.get_dropping_keycap_order(self) < 2:
+		self.column.transparency = min(self.column.transparency, max(self.MIN_COLUMN_ALPHA, self.y_position / 10.0))
 
 #	var height: float = self.keycap.position.y
 #	if $Column:
 #		$Column.set_scale(Vector3(1.0, self.keycap.position.y, 1.0))
 #		$Column.position.y = height / 2.0
 
-	if not self.locked and self.keycap.position.y < self.CONTROL_BOTTOM:
+	if not self.locked and self.y_position < self.CONTROL_BOTTOM:
 		self.lock()
 
 func lock():
@@ -95,9 +104,9 @@ func _input(event):
 			if not self.selected and Nodes.game.is_first_dropping_keycap(self):
 				self.drop_unit(true)
 				self.lock()
-				Nodes.game.drop_other_letters_extra.emit(self, floor(self.keycap.position.y))
+				Nodes.game.drop_other_letters_extra.emit(self, floor(self.y_position))
 
-		if not self.locked and self.selected and self.keycap.position.y >= self.CONTROL_BOTTOM and Nodes.game.is_first_dropping_keycap_with_letter(self):
+		if not self.locked and self.selected and self.y_position >= self.CONTROL_BOTTOM and Nodes.game.is_first_dropping_keycap_with_letter(self):
 			var new_x:int = self.x + 0
 			var new_y:int = self.y + 0
 

@@ -92,6 +92,9 @@ func is_first_dropping_keycap(dropping_keycap: DroppingKeycap):
 	return dropping_keycap == self.active_dropping_keycaps[0]
 
 
+func get_dropping_keycap_order(dropping_keycap: DroppingKeycap) -> int:
+	return self.active_dropping_keycaps.find(DroppingKeycap)
+
 func get_first_dropping_keycap_with_letter(letter: String) -> DroppingKeycap:
 	for tmp_dropping_keycap in self.active_dropping_keycaps:
 		if letter == tmp_dropping_keycap.letter:
