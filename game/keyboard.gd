@@ -1,4 +1,5 @@
 @tool
+class_name Keyboard
 extends Node
 
 const KeycapScene = preload("res://game/keycap/keycap.tscn")
@@ -8,6 +9,8 @@ var keycaps: Dictionary
 
 
 func _init():
+	Nodes.keyboard = self
+
 	self.layout = { 0: "QWERTYUIOP", 1: "ASDFGHJKL", 2: " ZXCVBNM"}
 	self.keycaps = { 0: [], 1: [], 2: []}
 

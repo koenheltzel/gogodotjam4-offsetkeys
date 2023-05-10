@@ -1,0 +1,28 @@
+[gd_scene load_steps=3 format=3 uid="uid://dqtubkxp0gleh"]
+
+[ext_resource type="Script" path="res://game/game.gd" id="1_bsx6d"]
+[ext_resource type="Script" path="res://game/keyboard.gd" id="2_sbr5e"]
+
+[node name="Game" type="Node3D"]
+script = ExtResource("1_bsx6d")
+letters = "LESS IS MORE"
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.390731, 0.920505, 0, -0.920505, 0.390731, 4.5, 35, 12.642)
+current = true
+fov = 20.0
+size = 0.001
+
+[node name="Keyboard" type="Node3D" parent="."]
+script = ExtResource("2_sbr5e")
+
+[node name="SpotLight3D" type="SpotLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -0.298991, 0.954256, 0, -0.954256, -0.298991, 4.5, 10, -5.47)
+spot_range = 12.217
+spot_angle = 12.56
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.412266, 0.53015, -0.740931, 0.0529982, 0.797927, 0.60042, 0.909521, -0.286801, 0.300861, 0, 3.13892, 0)
+
+[node name="SpelledLetters" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 0, 3.82634)
