@@ -6,7 +6,6 @@ extends Node3D
 var spelled_letters: Array = []
 var letter_colors: Array = [Color.CORNFLOWER_BLUE] #Keycap.COLOR_ORANGE, Keycap.COLOR_LIGHT_ORANGE, Keycap.COLOR_YELLOW, Keycap.COLOR_BLUE
 var letter_color_index: int = 0
-signal drop_other_letters_extra(units: int)
 
 const KeycapScene = preload("res://game/keycap/keycap.tscn")
 const DroppingKeycapScene = preload("res://game/dropping_keycap.tscn")
@@ -30,7 +29,7 @@ func _ready():
 			$SpelledLetters.add_child(keycap)
 			self.spelled_letters.append(keycap)
 
-			var position = self.get_random_start_position(letter, 0, 1, [])
+			var position = self.get_random_start_position(letter, 0, 0, [])
 			var dropping_key = DroppingKeycapScene.instantiate()
 			dropping_key.letter = letter
 			dropping_key.x = position.x
@@ -39,7 +38,7 @@ func _ready():
 			dropping_key.letter_color = self.get_next_letter_color()
 			dropping_key.letter_locked.connect(self._on_letter_locked)
 			dropping_key.letter_destroyed.connect(self._on_letter_destroyed)
-			dropping_key.start_y_position = 10 + letter_count * 3
+			dropping_key.start_y_position = 10 + letter_count * 8
 			self.add_child(dropping_key)
 			self.active_dropping_keycaps.append(dropping_key)
 			letter_count += 1
@@ -57,7 +56,7 @@ func _on_letter_destroyed(dropping_keycap: DroppingKeycap):
 func _on_letter_locked(dropping_keycap: DroppingKeycap, index, success):
 	var keycap: Keycap = self.spelled_letters[index]
 	keycap.visible = true
-	keycap.highlight(Keycap.COLOR_GREEN if success else Keycap.COLOR_RED, 0)
+	keycap.highlight(Keycap.COLOR_GREEN if success else Keycap.COLOR_RED)
 	self.active_dropping_keycaps.erase(dropping_keycap)
 
 
@@ -78,14 +77,17 @@ func get_letter_position(letter: String):
 func get_random_start_position(letter: String, min_spaces: int, max_spaces: int, already_taken: Array):
 	while true:
 		var old_position = self.get_letter_position(letter)
-		var new_position = old_position
-		new_position.y = new_position.y + randi_range(min_spaces, max_spaces) * (1 if randi_range(0, 1) == 1 else -1)
-		new_position.y = max(0, min(2, new_position.y))
-		new_position.x = new_position.x + randi_range(min_spaces, max_spaces) * (1 if randi_range(0, 1) == 1 else -1)
-		new_position.x = max(0, min(Nodes.keyboard.layout[new_position.y].length(), new_position.x))
-		var start_letter:String = Nodes.keyboard.get_letter_by_position(new_position.x, new_position.y)
-		if not start_letter in ["", " "] and new_position != old_position:
-			return new_position
+		if max_spaces == 0:
+			return old_position
+		else:
+			var new_position = old_position
+			new_position.y = new_position.y + randi_range(min_spaces, max_spaces) * (1 if randi_range(0, 1) == 1 else -1)
+			new_position.y = max(0, min(2, new_position.y))
+			new_position.x = new_position.x + randi_range(min_spaces, max_spaces) * (1 if randi_range(0, 1) == 1 else -1)
+			new_position.x = max(0, min(Nodes.keyboard.layout[new_position.y].length(), new_position.x))
+			var start_letter:String = Nodes.keyboard.get_letter_by_position(new_position.x, new_position.y)
+			if not start_letter in ["", " "] and new_position != old_position:
+				return new_position
 
 
 func is_first_dropping_keycap(dropping_keycap: DroppingKeycap):
@@ -95,11 +97,13 @@ func is_first_dropping_keycap(dropping_keycap: DroppingKeycap):
 func get_dropping_keycap_order(dropping_keycap: DroppingKeycap) -> int:
 	return self.active_dropping_keycaps.find(DroppingKeycap)
 
+
 func get_first_dropping_keycap_with_letter(letter: String) -> DroppingKeycap:
 	for tmp_dropping_keycap in self.active_dropping_keycaps:
 		if letter == tmp_dropping_keycap.letter:
 			return tmp_dropping_keycap
 	return null
+
 
 func is_first_dropping_keycap_with_letter(dropping_keycap: DroppingKeycap):
 	return self.get_first_dropping_keycap_with_letter(dropping_keycap.letter) == dropping_keycap

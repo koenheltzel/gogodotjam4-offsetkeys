@@ -30,21 +30,6 @@ func _process(delta):
 	self.label_3d.text = self.letter  # Should be in _ready but when instantiating DroppingKeycap, this doesn't work.
 
 
-func _input(event) -> void:
-	if (self.type == Types.LAYOUT or self.type == Types.DROPPING) and InputMap.has_action(self.letter) and event.is_action(self.letter) and not event.is_echo():
-		# Dirty check: we only want to highlight the first dropping keycap with the pressed letter.
-		var first_dropping_keycap_with_letter: DroppingKeycap = Nodes.game.get_first_dropping_keycap_with_letter(self.letter)
-		if self.type == Types.DROPPING and (not first_dropping_keycap_with_letter or not self == first_dropping_keycap_with_letter.keycap):
-			return
-
-		if self.type == Types.DROPPING:
-			if event.is_action_pressed(self.letter):
-				self.highlight(self.highlight_color, 0)
-				# self.position.y = -0.25 if Input.is_action_pressed(self.letter) else 0.0
-			else:
-				self.reset_highlight()
-
-
 func reset_highlight():
 #	(self.mesh_instance_3d.material_override as StandardMaterial3D).albedo_color = Color.ANTIQUE_WHITE
 	(self.mesh_instance_3d.material_override as StandardMaterial3D).backlight_enabled = false
@@ -52,7 +37,7 @@ func reset_highlight():
 #	(self.mesh_instance_3d.material_override as StandardMaterial3D).emission_enabled = false
 
 
-func highlight(color: Color, duration=0.25):
+func highlight(color: Color):
 #	(self.mesh_instance_3d.material_override as StandardMaterial3D).albedo_color = color #if Input.is_action_pressed(self.letter) else Color.ANTIQUE_WHITE
 #	color.r *= 1.25
 #	color.g *= 1.25
@@ -66,11 +51,3 @@ func highlight(color: Color, duration=0.25):
 #	(self.mesh_instance_3d.material_override as StandardMaterial3D).rim = 0.15
 #	(self.mesh_instance_3d.material_override as StandardMaterial3D).rim_tint = 1.0
 #	(self.mesh_instance_3d.material_override as StandardMaterial3D).rim_enabled = true
-
-	if duration > 0:
-		var timer = Timer.new()
-		timer.wait_time = 0.25
-		timer.one_shot = true
-		timer.autostart = true
-		timer.timeout.connect(self.reset_highlight)
-		self.add_child(timer)
