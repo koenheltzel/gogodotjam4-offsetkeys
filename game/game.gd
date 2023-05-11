@@ -17,6 +17,15 @@ func _init():
 
 
 func _ready():
+	self.start_level(1)
+
+
+func start_level(level:int):
+	if level == 1:
+		self.letters = "LESS IS MORE"
+	elif level == 2:
+		self.letters = "GOGODOTJAM"
+
 	var i: int = 0
 	var letter_count: int = 0
 	for letter in self.letters:
@@ -37,7 +46,6 @@ func _ready():
 			dropping_key.letter_index = i
 			dropping_key.letter_color = self.get_next_letter_color()
 			dropping_key.letter_locked.connect(self._on_letter_locked)
-			dropping_key.letter_destroyed.connect(self._on_letter_destroyed)
 			dropping_key.start_y_position = 10 + letter_count * 8
 			self.add_child(dropping_key)
 			self.active_dropping_keycaps.append(dropping_key)
@@ -47,10 +55,6 @@ func _ready():
 		i += 1
 	$SpelledLetters.scale = Vector3(0.75, 0.75, 0.75)
 	$SpelledLetters.position.x -= self.letters.length() / 2.0
-
-
-func _on_letter_destroyed(dropping_keycap: DroppingKeycap):
-	pass
 
 
 func _on_letter_locked(dropping_keycap: DroppingKeycap, index, success):
@@ -95,7 +99,7 @@ func is_first_dropping_keycap(dropping_keycap: DroppingKeycap):
 
 
 func get_dropping_keycap_order(dropping_keycap: DroppingKeycap) -> int:
-	return self.active_dropping_keycaps.find(DroppingKeycap)
+	return self.active_dropping_keycaps.find(dropping_keycap)
 
 
 func get_first_dropping_keycap_with_letter(letter: String) -> DroppingKeycap:

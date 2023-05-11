@@ -2,14 +2,12 @@ class_name DroppingKeycap
 extends Node3D
 
 signal letter_locked(dropping_keycap: DroppingKeycap, index: int, success: bool)
-signal letter_destroyed()
 @onready var keycap: Keycap = $Keycap
 @onready var column: MeshInstance3D = $Column
 
 @export var letter: String
 @export var letter_index: int
 @export var letter_color: Color
-const BOTTOM: float = 0.03
 const CONTROL_BOTTOM: float = 0.25
 const MIN_COLUMN_ALPHA: float = 0.8
 const Y_SCALE: float = 1.5
@@ -41,13 +39,12 @@ func _ready():
 	var tmp_y_position = self.y_position
 	for i in range(self.y_position + 1):
 		tween.tween_property(self, "y_position", tmp_y_position, self.DROP_TIME).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
-		tmp_y_position = max(self.BOTTOM, tmp_y_position - 1.0)
+		tmp_y_position = tmp_y_position - 1.0
 	tween.tween_interval(0.25)
 	tween.finished.connect(self.tween_ready)
 
 
 func tween_ready():
-	self.letter_destroyed.emit(self)
 	self.queue_free()
 	Engine.time_scale = 1.0
 
