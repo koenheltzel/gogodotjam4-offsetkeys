@@ -2,6 +2,7 @@ class_name DroppingKeycap
 extends Node3D
 
 signal letter_locked(dropping_keycap: DroppingKeycap, index: int, success: bool)
+signal letter_destroyed()
 @onready var keycap: Keycap = $Keycap
 @onready var column: Node3D = $Column
 
@@ -45,7 +46,7 @@ func _ready():
 
 func tween_ready():
 	self.queue_free()
-	Engine.time_scale = 1.0
+	self.letter_destroyed.emit()
 
 	if not Input.is_action_pressed(self.letter):
 		var keyboard_keycap:Keycap = Nodes.keyboard.get_keycap_by_position(self.x, self.y)
@@ -83,7 +84,6 @@ func _input(event):
 				self.keycap.highlight(self.keycap.highlight_color)
 
 			if not self.selected and Nodes.game.is_lowest_level_dropping_keycap(self):
-				Engine.time_scale = self.DROP_TIME * 8
 				self.lock()
 
 		if not self.locked and self.selected and self.y_position >= self.CONTROL_BOTTOM and Nodes.game.is_first_dropping_keycap_with_letter(self):

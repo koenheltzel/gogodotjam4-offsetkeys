@@ -6,6 +6,7 @@ extends Node3D
 var spelled_letters: Array = []
 var letter_colors: Array = [Color.CORNFLOWER_BLUE] #Keycap.COLOR_ORANGE, Keycap.COLOR_LIGHT_ORANGE, Keycap.COLOR_YELLOW, Keycap.COLOR_BLUE
 var letter_color_index: int = 0
+var locked_letters_tweening: int = 0
 
 const KeycapScene = preload("res://game/keycap/keycap.tscn")
 const DroppingKeycapScene = preload("res://game/dropping_keycap.tscn")
@@ -51,6 +52,7 @@ func start_level(level:int):
 			dropping_key.letter_index = i
 			dropping_key.letter_color = self.get_next_letter_color()
 			dropping_key.letter_locked.connect(self._on_letter_locked)
+			dropping_key.letter_destroyed.connect(self._on_letter_destroyed)
 			dropping_key.start_y_position = 10 + letter_count * 8
 			self.add_child(dropping_key)
 			self.active_dropping_keycaps.append(dropping_key)
@@ -67,6 +69,15 @@ func _on_letter_locked(dropping_keycap: DroppingKeycap, index, success):
 	keycap.visible = true
 	keycap.highlight(Keycap.COLOR_GREEN if success else Keycap.COLOR_RED)
 	self.active_dropping_keycaps.erase(dropping_keycap)
+	self.locked_letters_tweening += 1
+
+	Engine.time_scale = DroppingKeycap.DROP_TIME * 8
+
+
+func _on_letter_destroyed():
+	self.locked_letters_tweening -= 1
+	if Nodes.game.locked_letters_tweening == 0:
+		Engine.time_scale = 1.0
 
 
 func get_next_letter_color():
@@ -102,7 +113,7 @@ func get_random_start_position(letter: String, min_spaces: int, max_spaces: int,
 func get_lowest_level():
 	var lowest_level = 99999
 	for tmp_dropping_keycap in self.active_dropping_keycaps:
-		if floor(tmp_dropping_keycap.y_position) < lowest_level:
+		if not tmp_dropping_keycap.locked and floor(tmp_dropping_keycap.y_position) < lowest_level:
 			lowest_level = floor(tmp_dropping_keycap.y_position)
 	return lowest_level
 
