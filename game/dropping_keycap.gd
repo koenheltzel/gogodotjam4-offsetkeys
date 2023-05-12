@@ -3,13 +3,13 @@ extends Node3D
 
 signal letter_locked(dropping_keycap: DroppingKeycap, index: int, success: bool)
 @onready var keycap: Keycap = $Keycap
-@onready var column: MeshInstance3D = $Column
+@onready var column: Node3D = $Column
 
 @export var letter: String
 @export var letter_index: int
 @export var letter_color: Color
 const CONTROL_BOTTOM: float = 0.25
-const MIN_COLUMN_ALPHA: float = 0.8
+const MIN_COLUMN_ALPHA: float = 0.4
 const Y_SCALE: float = 1.5
 const DROP_TIME: float = 1.5
 var x: int = 0
@@ -31,8 +31,8 @@ func _ready():
 	self.keycap.highlight_color = self.letter_color
 	self.y_position = self.start_y_position
 
-	self.column.material_override = self.column.material_override.duplicate(true)
-	(self.column.material_override as StandardMaterial3D).albedo_color = self.letter_color
+#	self.column.material_override = self.column.material_override.duplicate(true)
+#	(self.column.material_override as StandardMaterial3D).albedo_color = self.letter_color
 	self.column.transparency = 1.0
 
 	var tween = self.get_tree().create_tween()
@@ -57,7 +57,10 @@ func _process(delta):
 	self.position.x = self.x
 	self.position.z = self.y
 	if Nodes.game.get_dropping_keycap_order(self) < 2:
-		self.column.transparency = min(self.column.transparency, max(self.MIN_COLUMN_ALPHA, self.y_position / 10.0))
+		self.column.scale.y = self.y_position * self.Y_SCALE
+		self.column.transparency = min(self.column.transparency, max(self.MIN_COLUMN_ALPHA, self.y_position / 20.0))
+#		self.column.transparency = min(self.column.transparency, max(self.MIN_COLUMN_ALPHA, self.y_position / 10.0))
+		pass
 
 	if not self.locked and self.y_position < self.CONTROL_BOTTOM:
 		self.lock()

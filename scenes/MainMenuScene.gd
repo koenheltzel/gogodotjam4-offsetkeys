@@ -32,15 +32,14 @@ func _ready() -> void:
 		new_game_button.grab_focus()
 
 func _process(delta):
+	# Wiggle game title in relation to the mouse position.
 	var viewport_size: Vector2 = get_viewport().get_visible_rect().size
 	viewport_size /= 2.0
 	var mouse_position: Vector2 = get_viewport().get_mouse_position()
 	var x_movement: float = (mouse_position.x - viewport_size.x) / viewport_size.x
 	var y_movement: float = (mouse_position.y - viewport_size.y) / viewport_size.y
-
 	self.game_title.rotation.y = x_movement * 0.1
 	self.game_title.rotation.x = y_movement * 0.1
-	print(x_movement, y_movement)
 
 func _on_settings_button_pressed() -> void:
 	new_game = false

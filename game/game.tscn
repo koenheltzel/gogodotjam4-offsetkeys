@@ -152,7 +152,7 @@ transform = Transform3D(0.412266, 0.53015, -0.740931, 0.0529982, 0.797927, 0.600
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 0, 3.82634)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(11, 0, 0, 0, 0.25, 0, 0, 0, 4, 4.5, -0.125, 1)
+transform = Transform3D(10.25, 0, 0, 0, 0.25, 0, 0, 0, 3.25, 4.5, -0.125, 1)
 mesh = SubResource("BoxMesh_fxmit")
 surface_material_override/0 = SubResource("StandardMaterial3D_lfits")
 
