@@ -25,7 +25,7 @@ func _ready():
 	if not Nodes.keyboard.is_ready:
 		await Nodes.keyboard_ready
 	self.hide_message(false)
-	self.start_level(1)
+	self.start_level(2)
 
 
 func show_message(message):
@@ -35,13 +35,13 @@ func show_message(message):
 
 	self.message_label.text = message
 	var tween: Tween = get_tree().create_tween()
-	tween.tween_property(self.message_label, "modulate:a", 1.0, 0.5)
+	tween.tween_property(self.message_label, "modulate:a", 1.0, 0.5 * Engine.time_scale)
 
 
 func hide_message(fade=true):
 	if fade:
 		var tween: Tween = get_tree().create_tween()
-		tween.tween_property(self.message_label, "modulate:a", 0, 0.5)
+		tween.tween_property(self.message_label, "modulate:a", 0, 0.5 * Engine.time_scale)
 		return tween
 	else:
 		self.message_label.modulate.a = 0
@@ -98,8 +98,30 @@ func start_level(level:int):
 			LetterData.new("R", 9.2 * gap, normal, 2),
 			LetterData.new("E", 10.2 * gap, normal, 2),
 		]
+	elif level == 2:
+		var slowmo: float = 0.5
+		var slow: float = 0.7
+		var normal: float = 1.0
+
+		var gap: int = 10
+		self.letters = [
+			LetterData.new("G", 1 * gap, normal, 2),
+			LetterData.new("O", 2 * gap, normal, 2),
+			null,
+			LetterData.new("G", 3 * gap, normal, 3),
+			LetterData.new("O", 4 * gap, normal, 3),
+			LetterData.new("D", 5 * gap, normal, 4).set_callback(self.show_message, ["Wow, two keys on the same level!\nThey drop when you release the first key, so be smart!"]),
+			LetterData.new("O", 6 * gap, slowmo).set_fixed_offset(Vector2i(-1, 0)).set_callback(self.hide_message),
+			LetterData.new("T", 6 * gap, slowmo).set_fixed_offset(Vector2i(-1, 0)),
+			null,
+			LetterData.new("J", 7 * gap, slowmo).set_fixed_offset(Vector2i(0, 1)),
+			LetterData.new("A", 7 * gap, slowmo).set_fixed_offset(Vector2i(1, 0)),
+			LetterData.new("M", 8 * gap, normal, 5),
+		]
 #	elif level == 2:
 #		self.letters = "GOGODOTJAM"
+
+#.set_callback(self.show_message, ["Tip: the SPACEBAR is your joker key. Use it to move these keys individually."]),
 
 	var i: int = 0
 	var letter_count: int = 0
@@ -151,7 +173,7 @@ func _on_letter_locked(dropping_keycap: DroppingKeycap, index, success):
 	self.active_dropping_keycaps.erase(dropping_keycap)
 	self.locked_letters_tweening += 1
 
-	Engine.time_scale = dropping_keycap.time_scale * 8
+	Engine.time_scale = 8
 
 
 func _on_letter_destroyed():
