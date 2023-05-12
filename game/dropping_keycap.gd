@@ -24,6 +24,8 @@ var y_position: float:
 	set(value):
 		y_position = value
 		keycap.position.y = value * Y_SCALE
+		column.scale.y = y_position * Y_SCALE
+		column.transparency = min(column.transparency, max(MIN_COLUMN_ALPHA, y_position / 20.0))
 
 
 func _ready():
@@ -56,11 +58,6 @@ func tween_ready():
 func _process(delta):
 	self.position.x = self.x
 	self.position.z = self.y
-	if Nodes.game.get_dropping_keycap_order(self) < 2:
-		self.column.scale.y = self.y_position * self.Y_SCALE
-		self.column.transparency = min(self.column.transparency, max(self.MIN_COLUMN_ALPHA, self.y_position / 20.0))
-#		self.column.transparency = min(self.column.transparency, max(self.MIN_COLUMN_ALPHA, self.y_position / 10.0))
-		pass
 
 	if not self.locked and self.y_position < self.CONTROL_BOTTOM:
 		self.lock()
@@ -68,7 +65,6 @@ func _process(delta):
 
 func lock():
 	self.locked = true
-	$Column.visible = false
 
 	var success: bool = self.letter == Nodes.keyboard.get_letter_by_position(self.x, self.y)
 	if success:
