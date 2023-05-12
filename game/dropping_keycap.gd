@@ -33,10 +33,6 @@ func _ready():
 	self.keycap.highlight_color = self.letter_color
 	self.y_position = self.start_y_position
 
-#	self.column.material_override = self.column.material_override.duplicate(true)
-#	(self.column.material_override as StandardMaterial3D).albedo_color = self.letter_color
-	self.column.transparency = 1.0
-
 	var tween = self.get_tree().create_tween()
 	var tmp_y_position = self.y_position
 	for i in range(self.y_position + 1):
