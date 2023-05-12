@@ -5,14 +5,31 @@ extends Node
 const KeycapScene = preload("res://game/keycap/keycap.tscn")
 
 var layout: Dictionary
+var layouts: Dictionary = {
+	0: { 0: "QWERTYUIOP", 1: "ASDFGHJKL", 2: " ZXCVBNM"},
+	1: { 0: "QWERTZUIOP", 1: "ASDFGHJKL", 2: " YXCVBNM"},
+	2: { 0: "AZERTYUIOP", 1: "QSDFGHJKLM", 2: " WXCVBN"},
+}
 var keycaps: Dictionary
+var is_ready: bool = false
 
 
 func _init():
 	Nodes.keyboard = self
 
-	self.layout = { 0: "QWERTYUIOP", 1: "ASDFGHJKL", 2: " ZXCVBNM"}
+
+func _ready():
+	Nodes.keyboard_ready.emit()
+	self.is_ready = true
+
+
+func set_layout(index: int):
+	self.layout = self.layouts[index]
+
 	self.keycaps = { 0: [], 1: [], 2: []}
+
+	while self.get_child_count() > 0:
+		self.remove_child(self.get_children()[0])
 
 	for z in self.layout:
 		var line: String = self.layout[z]

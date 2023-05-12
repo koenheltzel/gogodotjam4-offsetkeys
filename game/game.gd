@@ -17,10 +17,15 @@ func _init():
 
 
 func _ready():
-	self.start_level(1)
+	if not Nodes.keyboard.is_ready:
+		await Nodes.keyboard_ready
+	self.start_level(2)
 
 
 func start_level(level:int):
+	$LevelLabel.text = "Level %d" % level
+	%LevelIntroAnimation.play("level_start")
+
 	if level == 1:
 		self.letters = "LESS IS MORE"
 	elif level == 2:

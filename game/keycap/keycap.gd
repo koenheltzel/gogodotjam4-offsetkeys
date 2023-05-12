@@ -27,7 +27,8 @@ func _ready():
 
 
 func _process(delta):
-	self.label_3d.text = self.letter  # Should be in _ready but when instantiating DroppingKeycap, this doesn't work.
+	if self.label_3d.text != self.letter:
+		self.label_3d.text = self.letter  # Should be in _ready but when instantiating DroppingKeycap, this doesn't work.
 
 
 func reset_highlight():

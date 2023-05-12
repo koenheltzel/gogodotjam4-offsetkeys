@@ -1,0 +1,11 @@
+[gd_resource type="TextMesh" load_steps=3 format=3 uid="uid://5u4p4b5ykwbh"]
+
+[ext_resource type="FontFile" uid="uid://ddpgvfbp41y6e" path="res://fonts/GeneraleStation-Regular.otf" id="1_kyxs3"]
+
+[sub_resource type="ORMMaterial3D" id="ORMMaterial3D_y4a20"]
+
+[resource]
+material = SubResource("ORMMaterial3D_y4a20")
+text = "Level 1"
+font = ExtResource("1_kyxs3")
+font_size = 96

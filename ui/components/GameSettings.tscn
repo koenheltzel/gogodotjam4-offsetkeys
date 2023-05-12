@@ -26,11 +26,18 @@ layout_mode = 2
 
 [node name="Language" type="Label" parent="MarginContainer/GridContainer"]
 layout_mode = 2
-text = "settings_language"
+text = "Keyboard layout"
 
 [node name="LanguageDropdown" type="OptionButton" parent="MarginContainer/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+item_count = 3
+popup/item_0/text = "QWERTY"
+popup/item_0/id = 0
+popup/item_1/text = "QWERTZ"
+popup/item_1/id = 1
+popup/item_2/text = "AZERTY"
+popup/item_2/id = 2
 
 [node name="MasterVolumeEnabled" type="Label" parent="MarginContainer/GridContainer"]
 layout_mode = 2
