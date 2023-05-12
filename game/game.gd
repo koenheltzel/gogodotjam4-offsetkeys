@@ -131,7 +131,3 @@ func get_first_dropping_keycap_with_letter(letter: String) -> DroppingKeycap:
 		if letter == tmp_dropping_keycap.letter:
 			return tmp_dropping_keycap
 	return null
-
-
-func is_first_dropping_keycap_with_letter(dropping_keycap: DroppingKeycap):
-	return self.get_first_dropping_keycap_with_letter(dropping_keycap.letter) == dropping_keycap

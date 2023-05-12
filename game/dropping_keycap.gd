@@ -77,7 +77,7 @@ func lock():
 
 func _input(event):
 	if not self.locked and self.letter != "" and not event.is_echo():
-		if InputMap.has_action(self.letter) and event.is_action(self.letter) and Nodes.game.is_first_dropping_keycap_with_letter(self):
+		if InputMap.has_action(self.letter) and event.is_action(self.letter) and Nodes.game.is_lowest_level_dropping_keycap(self):
 			self.selected = event.is_action_pressed(self.letter)
 
 			if self.selected:
@@ -86,7 +86,7 @@ func _input(event):
 			if not self.selected and Nodes.game.is_lowest_level_dropping_keycap(self):
 				self.lock()
 
-		if not self.locked and self.selected and self.y_position >= self.CONTROL_BOTTOM and Nodes.game.is_first_dropping_keycap_with_letter(self):
+		if not self.locked and self.selected and self.y_position >= self.CONTROL_BOTTOM and Nodes.game.is_lowest_level_dropping_keycap(self):
 			var new_x:int = self.x + 0
 			var new_y:int = self.y + 0
 
