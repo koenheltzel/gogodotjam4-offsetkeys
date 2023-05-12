@@ -99,8 +99,16 @@ func get_random_start_position(letter: String, min_spaces: int, max_spaces: int,
 				return new_position
 
 
-func is_first_dropping_keycap(dropping_keycap: DroppingKeycap):
-	return dropping_keycap == self.active_dropping_keycaps[0]
+func get_lowest_level():
+	var lowest_level = 99999
+	for tmp_dropping_keycap in self.active_dropping_keycaps:
+		if floor(tmp_dropping_keycap.y_position) < lowest_level:
+			lowest_level = floor(tmp_dropping_keycap.y_position)
+	return lowest_level
+
+
+func is_lowest_level_dropping_keycap(dropping_keycap: DroppingKeycap):
+	return self.get_lowest_level() == floor(dropping_keycap.y_position)
 
 
 func get_dropping_keycap_order(dropping_keycap: DroppingKeycap) -> int:

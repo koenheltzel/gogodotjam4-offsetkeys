@@ -31,6 +31,7 @@ var y_position: float:
 func _ready():
 	self.keycap.letter = self.letter
 	self.keycap.highlight_color = self.letter_color
+	self.column.transparency = 1.0  # Set to fully transparent before setting y_position (because its setter uses the transparency value).
 	self.y_position = self.start_y_position
 
 	var tween = self.get_tree().create_tween()
@@ -81,7 +82,7 @@ func _input(event):
 			if self.selected:
 				self.keycap.highlight(self.keycap.highlight_color)
 
-			if not self.selected and Nodes.game.is_first_dropping_keycap(self):
+			if not self.selected and Nodes.game.is_lowest_level_dropping_keycap(self):
 				Engine.time_scale = self.DROP_TIME * 8
 				self.lock()
 
