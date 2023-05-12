@@ -1,36 +1,201 @@
-[gd_scene load_steps=8 format=3 uid="uid://dv2y18ye8j7o0"]
+[gd_scene load_steps=13 format=3 uid="uid://dv2y18ye8j7o0"]
 
 [ext_resource type="Script" path="res://scenes/MainMenuScene.gd" id="1_1foie"]
 [ext_resource type="PackedScene" uid="uid://cik30de5gaaah" path="res://scenes/IngameScene.tscn" id="2_nl5i6"]
 [ext_resource type="PackedScene" uid="uid://g4qhvbvdm62w" path="res://scenes/GameSettingsScene.tscn" id="3_dgs4d"]
 [ext_resource type="PackedScene" uid="uid://bkk87o2ooo6at" path="res://ui/overlays/FadeOverlay.tscn" id="3_kf1us"]
-[ext_resource type="PackedScene" uid="uid://b4blrdjthcxnn" path="res://ui/components/GameLogo.tscn" id="4_fnufg"]
+[ext_resource type="TextMesh" uid="uid://5u4p4b5ykwbh" path="res://game/levels/level_text_mesh.tres" id="4_dcj0n"]
+[ext_resource type="FontFile" uid="uid://ddpgvfbp41y6e" path="res://fonts/GeneraleStation-Regular.otf" id="4_hsa77"]
 [ext_resource type="AudioStream" uid="uid://dlchk3c1baiy8" path="res://music/corgie-title.ogg" id="6_drnm6"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_s5vbg"]
+metallic_specular = 0.89
+
+[sub_resource type="Animation" id="Animation_2bvla"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(4.5, 4.6258, -1.63891)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(-0.85488, 0, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(1, 1, 1)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".:transparency")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="Animation" id="Animation_itc3o"]
+resource_name = "level_start"
+length = 2.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5, 1.6, 2),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(-8.797, 4.626, -1.639), Vector3(4.5, 4.6258, -1.63891), Vector3(4.5, 4.6258, -1.63891), Vector3(17.691, 4.626, -1.639)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5, 1.6, 2),
+"transitions": PackedFloat32Array(-2, -2, 1, 1),
+"update": 0,
+"values": [Vector3(-3.9968, 0, 0), Vector3(-0.85488, 0, 0), Vector3(-0.85488, 0, 0), Vector3(5.42797, 0, 0)]
+}
+tracks/2/type = "scale_3d"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = PackedFloat32Array()
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".:scale")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.4, 1.6),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(1, 1, 1), Vector3(1, 1, 1), Vector3(1.2, 1.2, 1.2)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath(".:transparency")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.6, 1.5, 2),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [1.0, 0.0, 0.0, 1.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_4lpdv"]
+_data = {
+"RESET": SubResource("Animation_2bvla"),
+"level_start": SubResource("Animation_itc3o")
+}
 
 [sub_resource type="LabelSettings" id="LabelSettings_2ikbh"]
 font_size = 8
 font_color = Color(1, 1, 1, 0.486275)
 
-[node name="MainMenuScene" type="Node2D"]
+[node name="MainMenuScene" type="Node3D"]
 script = ExtResource("1_1foie")
 game_scene = ExtResource("2_nl5i6")
 settings_scene = ExtResource("3_dgs4d")
 
+[node name="Music" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_drnm6")
+autoplay = true
+bus = &"Music"
+
+[node name="Node3D" type="Node3D" parent="."]
+
+[node name="Camera3D" type="Camera3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.62904)
+
+[node name="GameTitle" type="MeshInstance3D" parent="Node3D"]
+unique_name_in_owner = true
+transform = Transform3D(0.777, 0, 0, 0, 0.777, 0, 0, 0, 0.777, 0, 1.142, -1.403)
+mesh = ExtResource("4_dcj0n")
+skeleton = NodePath("")
+surface_material_override/0 = SubResource("StandardMaterial3D_s5vbg")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Node3D"]
+transform = Transform3D(0.823528, 0.305146, -0.478214, 0.0529982, 0.797926, 0.60042, 0.564795, -0.519807, 0.640942, 0, 3.13892, 0)
+visible = false
+
+[node name="SpotLight3D" type="SpotLight3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 0.996297, 0.0859735, 0, -0.0859735, 0.996297, -0.0304585, 2.42101, 4.38284)
+light_energy = 5.139
+light_specular = 4.0
+spot_range = 8.5
+spot_angle = 33.41
+
 [node name="UI" type="CanvasLayer" parent="."]
+
+[node name="CenterContainer2" type="CenterContainer" parent="UI"]
+offset_right = 1024.0
+offset_bottom = 225.0
+
+[node name="LevelLabel" type="Label" parent="UI/CenterContainer2"]
+visible = false
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_hsa77")
+theme_override_font_sizes/font_size = 80
+text = "Offset Keys"
+horizontal_alignment = 1
+
+[node name="LevelIntroAnimation" type="AnimationPlayer" parent="UI/CenterContainer2/LevelLabel"]
+unique_name_in_owner = true
+libraries = {
+"": SubResource("AnimationLibrary_4lpdv")
+}
 
 [node name="CenterContainer" type="CenterContainer" parent="UI"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = 225.0
+offset_bottom = -175.0
 grow_horizontal = 2
 grow_vertical = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI/CenterContainer"]
 layout_mode = 2
 theme_override_constants/separation = 5
-
-[node name="GameLogo" parent="UI/CenterContainer/VBoxContainer" instance=ExtResource("4_fnufg")]
-layout_mode = 2
 
 [node name="ContinueButton" type="Button" parent="UI/CenterContainer/VBoxContainer"]
 unique_name_in_owner = true
@@ -58,22 +223,32 @@ layout_mode = 2
 size_flags_horizontal = 4
 text = "leave_game"
 
-[node name="Credits" type="MarginContainer" parent="UI/CenterContainer/VBoxContainer"]
+[node name="CenterContainer3" type="CenterContainer" parent="UI"]
+offset_top = 398.0
+offset_right = 1024.0
+offset_bottom = 576.0
+
+[node name="Credits" type="MarginContainer" parent="UI/CenterContainer3"]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/margin_top = 10
 
-[node name="Label" type="Label" parent="UI/CenterContainer/VBoxContainer/Credits"]
+[node name="Label" type="Label" parent="UI/CenterContainer3/Credits"]
 layout_mode = 2
-text = "credits"
+text = "
+by JumpMaybe
+
+Credits:
+project template by bitbrain
+keyboard button mesh by Polymorph
+Générale Station font by Ariel Martín Pérez
+"
 label_settings = SubResource("LabelSettings_2ikbh")
 horizontal_alignment = 1
 
 [node name="FadeOverlay" parent="UI" instance=ExtResource("3_kf1us")]
 unique_name_in_owner = true
-visible = false
-
-[node name="Music" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("6_drnm6")
-autoplay = true
-bus = &"Music"
+offset_left = 870.0
+offset_top = -2.0
+offset_right = 870.0
+offset_bottom = -2.0

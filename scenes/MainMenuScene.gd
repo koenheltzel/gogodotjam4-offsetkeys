@@ -1,4 +1,4 @@
-extends Node2D
+extends Node3D
 
 @export var game_scene:PackedScene
 @export var settings_scene:PackedScene
@@ -8,6 +8,7 @@ extends Node2D
 @onready var new_game_button := %NewGameButton
 @onready var settings_button := %SettingsButton
 @onready var exit_button := %ExitButton
+@onready var game_title: MeshInstance3D = %GameTitle
 
 var next_scene = game_scene
 var new_game = true
@@ -29,6 +30,17 @@ func _ready() -> void:
 		continue_button.grab_focus()
 	else:
 		new_game_button.grab_focus()
+
+func _process(delta):
+	var viewport_size: Vector2 = get_viewport().get_visible_rect().size
+	viewport_size /= 2.0
+	var mouse_position: Vector2 = get_viewport().get_mouse_position()
+	var x_movement: float = (mouse_position.x - viewport_size.x) / viewport_size.x
+	var y_movement: float = (mouse_position.y - viewport_size.y) / viewport_size.y
+
+	self.game_title.rotation.y = x_movement * 0.1
+	self.game_title.rotation.x = y_movement * 0.1
+	print(x_movement, y_movement)
 
 func _on_settings_button_pressed() -> void:
 	new_game = false
