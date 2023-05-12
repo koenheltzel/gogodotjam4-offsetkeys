@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://dmelj2qgr8w7k" path="res://icon.svg" id="2_h1yxu"]
 [ext_resource type="PackedScene" uid="uid://jyv4g54adkmo" path="res://ui/overlays/PauseOverlay.tscn" id="3_8o178"]
 [ext_resource type="Script" path="res://scenes/NodeExample.gd" id="3_a5686"]
-[ext_resource type="PackedScene" path="res://game/game.tscn" id="4_uujd8"]
+[ext_resource type="PackedScene" uid="uid://bi4cw4wx7w160" path="res://game/game.tscn" id="4_uujd8"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_61nje"]
 viewport_path = NodePath("SubViewport")

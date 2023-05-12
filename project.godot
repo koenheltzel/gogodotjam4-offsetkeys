@@ -10,8 +10,8 @@ config_version=5
 
 [application]
 
-config/name="MyGame"
-run/main_scene="res://scenes/boot/godot/GodotBootsplashScene.tscn"
+config/name="Offset Keys"
+run/main_scene="res://scenes/MainMenuScene.tscn"
 config/features=PackedStringArray("4.0")
 config/icon="res://icon.svg"
 

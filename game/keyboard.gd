@@ -46,6 +46,11 @@ func set_layout(index: int):
 				self.add_child(keycap)
 				self.keycaps[z].append(keycap)
 
+	if get_tree().paused:
+		get_tree().paused = false
+		await get_tree().create_timer(0.05).timeout
+		get_tree().paused = true
+
 
 func get_letter_by_position(x, y):
 	if not y in self.layout:

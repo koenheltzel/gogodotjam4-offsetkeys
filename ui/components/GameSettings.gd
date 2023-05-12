@@ -9,21 +9,22 @@ extends VBoxContainer
 @onready var language_dropdown := %LanguageDropdown
 
 ## maps the index of a locale to the locale itself
-var locales:PackedStringArray = []
+#var locales:PackedStringArray = []
 
 func _ready() -> void:
-	self.locales = TranslationServer.get_loaded_locales()
-	var current_locale = TranslationServer.get_locale()
-	var idx = 0
-	var select_index = -1
-	for locale in locales:
-		var language = TranslationServer.get_locale_name(locale)
-		language_dropdown.add_item(language, idx)
-		if current_locale == locale:
-			select_index = idx
-		idx += 1
-	language_dropdown.select(select_index)
+#	self.locales = TranslationServer.get_loaded_locales()
+#	var current_locale = TranslationServer.get_locale()
+#	var idx = 0
+#	var select_index = -1
+#	for locale in locales:
+#		var language = TranslationServer.get_locale_name(locale)
+#		language_dropdown.add_item(language, idx)
+#		if current_locale == locale:
+#			select_index = idx
+#		idx += 1
 
+	var layout:int = UserSettings.get_value("keyboard_layout")
+	language_dropdown.select(layout)
 
 func _on_master_volume_toggle_toggled(button_pressed: bool) -> void:
 	master_volume_slider.editable = button_pressed

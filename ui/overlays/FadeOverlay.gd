@@ -6,7 +6,7 @@ signal on_complete_fade_out
 
 @export var fade_in_duration: float = 2.0
 @export var fade_out_duration: float = 1.0
-@export var auto_fade_in: bool = true 
+@export var auto_fade_in: bool = true
 @export var minimum_opacity: float = 1.0
 
 func _ready():
@@ -26,6 +26,6 @@ func fade_out():
 
 func _on_complete_fade_out():
 	emit_signal("on_complete_fade_out")
-	
+
 func _on_complete_fade_in():
 	emit_signal("on_complete_fade_in")
