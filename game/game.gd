@@ -1,8 +1,7 @@
 class_name Game
 extends Node3D
 
-@export var release_speed: float = 4.0
-@export var letters: String
+var letters: Array[LetterData]
 var spelled_letters: Array = []
 var letter_colors: Array = [Color.CORNFLOWER_BLUE] #Keycap.COLOR_ORANGE, Keycap.COLOR_LIGHT_ORANGE, Keycap.COLOR_YELLOW, Keycap.COLOR_BLUE
 var letter_color_index: int = 0
@@ -20,7 +19,7 @@ func _init():
 func _ready():
 	if not Nodes.keyboard.is_ready:
 		await Nodes.keyboard_ready
-	self.start_level(2)
+	self.start_level(1)
 
 
 func start_level(level:int):
@@ -28,32 +27,44 @@ func start_level(level:int):
 	%LevelIntroAnimation.play("level_start")
 
 	if level == 1:
-		self.letters = "LESS IS MORE"
-	elif level == 2:
-		self.letters = "GOGODOTJAM"
+		var gap: int = 6
+		self.letters = [
+			LetterData.new("L", 0, 0 * gap),
+			LetterData.new("E", 0, 1 * gap),
+			LetterData.new("S", 0, 2 * gap),
+			LetterData.new("S", 1, 3 * gap),
+			LetterData.new("I", 1, 4 * gap),
+			LetterData.new("S", 1, 5 * gap),
+			LetterData.new("M", 2, 6 * gap),
+			LetterData.new("O", 2, 7 * gap),
+			LetterData.new("R", 2, 8 * gap),
+			LetterData.new("E", 3, 9 * gap),
+		]
+#	elif level == 2:
+#		self.letters = "GOGODOTJAM"
 
 	var i: int = 0
 	var letter_count: int = 0
-	for letter in self.letters:
-		if letter != " ":
+	for letter_data in self.letters:
+		if letter_data.letter != " ":
 			var keycap: Keycap = KeycapScene.instantiate()
 			keycap.type = Keycap.Types.SPELLED
-			keycap.letter = letter
+			keycap.letter = letter_data.letter
 			keycap.position.x = i
 			keycap.visible = false
 			$SpelledLetters.add_child(keycap)
 			self.spelled_letters.append(keycap)
 
-			var position = self.get_random_start_position(letter, 0, 0, [])
+			var position = self.get_random_start_position(letter_data, [])
 			var dropping_key = DroppingKeycapScene.instantiate()
-			dropping_key.letter = letter
+			dropping_key.letter = letter_data.letter
 			dropping_key.x = position.x
 			dropping_key.y = position.y
 			dropping_key.letter_index = i
 			dropping_key.letter_color = self.get_next_letter_color()
 			dropping_key.letter_locked.connect(self._on_letter_locked)
 			dropping_key.letter_destroyed.connect(self._on_letter_destroyed)
-			dropping_key.start_y_position = 10 + letter_count * 8
+			dropping_key.start_y_position = letter_data.start_y_position
 			self.add_child(dropping_key)
 			self.active_dropping_keycaps.append(dropping_key)
 			letter_count += 1
@@ -61,7 +72,7 @@ func start_level(level:int):
 			self.spelled_letters.append(null)
 		i += 1
 	$SpelledLetters.scale = Vector3(0.75, 0.75, 0.75)
-	$SpelledLetters.position.x -= self.letters.length() / 2.0
+	$SpelledLetters.position.x -= len(self.letters) / 2.0
 
 
 func _on_letter_locked(dropping_keycap: DroppingKeycap, index, success):
@@ -94,17 +105,18 @@ func get_letter_position(letter: String):
 				return Vector2i(x, y)
 
 
-func get_random_start_position(letter: String, min_spaces: int, max_spaces: int, already_taken: Array):
+func get_random_start_position(letter_data: LetterData, already_taken: Array):
 	while true:
-		var old_position = self.get_letter_position(letter)
-		if max_spaces == 0:
+		var old_position = self.get_letter_position(letter_data.letter)
+		if letter_data.offset == 0:
 			return old_position
 		else:
 			var new_position = old_position
-			new_position.y = new_position.y + randi_range(min_spaces, max_spaces) * (1 if randi_range(0, 1) == 1 else -1)
-			new_position.y = max(0, min(2, new_position.y))
-			new_position.x = new_position.x + randi_range(min_spaces, max_spaces) * (1 if randi_range(0, 1) == 1 else -1)
-			new_position.x = max(0, min(Nodes.keyboard.layout[new_position.y].length(), new_position.x))
+			var x_movement = randi_range(0, letter_data.offset)
+			var y_movement = letter_data.offset - x_movement
+			new_position.y = new_position.y + x_movement * (1 if randi_range(0, 1) == 1 else -1)
+			new_position.x = new_position.x + y_movement * (1 if randi_range(0, 1) == 1 else -1)
+
 			var start_letter:String = Nodes.keyboard.get_letter_by_position(new_position.x, new_position.y)
 			if not start_letter in ["", " "] and new_position != old_position:
 				return new_position

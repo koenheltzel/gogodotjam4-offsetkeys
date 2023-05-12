@@ -129,7 +129,6 @@ _data = {
 
 [node name="Game" type="Node3D"]
 script = ExtResource("1_bsx6d")
-letters = "LESS IS MORE"
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.390731, 0.920505, 0, -0.920505, 0.390731, 4.5, 35, 12.642)
