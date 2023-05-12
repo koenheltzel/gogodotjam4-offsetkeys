@@ -5,12 +5,12 @@ extends Node3D
 @onready var column_right: Sprite3D = %ColumnRight
 @onready var column_back: Sprite3D = %ColumnBack
 
-var transparency: float:
+var alpha: float:
 	get:
-		return transparency
+		return alpha
 	set(value):
-		transparency = value
-		self.column_front.transparency = transparency
-		self.column_left.transparency = transparency
-		self.column_right.transparency = transparency
-		self.column_back.transparency = transparency
+		alpha = value
+		self.column_front.modulate.a = alpha
+		self.column_left.modulate.a = alpha
+		self.column_right.modulate.a = alpha
+		self.column_back.modulate.a = alpha

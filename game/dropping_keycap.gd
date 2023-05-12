@@ -10,7 +10,7 @@ signal letter_destroyed()
 @export var letter_index: int
 @export var letter_color: Color
 const CONTROL_BOTTOM: float = 0.25
-const MIN_COLUMN_ALPHA: float = 0.4
+const MAX_COLUMN_ALPHA: float = 0.6
 const Y_SCALE: float = 1.5
 const DROP_TIME: float = 1.5
 var x: int = 0
@@ -19,20 +19,21 @@ var selected: bool = false
 var locked: bool = false
 var time_tween: Tween
 var start_y_position: int = 0
+var time_scale: float
 var y_position: float:
 	get:
 		return y_position
 	set(value):
 		y_position = value
 		keycap.position.y = value * Y_SCALE
-		column.scale.y = y_position * Y_SCALE
-		column.transparency = min(column.transparency, max(MIN_COLUMN_ALPHA, y_position / 20.0))
+		column.scale.y = value * Y_SCALE
+		column.alpha = max(0, min(DroppingKeycap.MAX_COLUMN_ALPHA, 1.0 - value / 20.0))
 
 
 func _ready():
 	self.keycap.letter = self.letter
 	self.keycap.highlight_color = self.letter_color
-	self.column.transparency = 1.0  # Set to fully transparent before setting y_position (because its setter uses the transparency value).
+	self.column.alpha = 0  # Set to fully transparent before setting y_position (because its setter uses the alpha value).
 	self.y_position = self.start_y_position
 
 	var tween = self.get_tree().create_tween()

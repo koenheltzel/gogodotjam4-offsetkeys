@@ -11,6 +11,11 @@ const KeycapScene = preload("res://game/keycap/keycap.tscn")
 const DroppingKeycapScene = preload("res://game/dropping_keycap.tscn")
 var active_dropping_keycaps: Array[DroppingKeycap] = []
 
+@onready var message_label: Label = %MessageLabel
+@onready var audio_stream_player = %AudioStreamPlayer
+@onready var camera_animation_player: AnimationPlayer = %CameraAnimationPlayer
+
+var intro_sound = preload("res://game/intro.ogg")
 
 func _init():
 	Nodes.game = self
@@ -19,26 +24,79 @@ func _init():
 func _ready():
 	if not Nodes.keyboard.is_ready:
 		await Nodes.keyboard_ready
+	self.hide_message(false)
 	self.start_level(1)
 
 
-func start_level(level:int):
-	$LevelLabel.text = "Level %d" % level
-	%LevelIntroAnimation.play("level_start")
+func show_message(message):
+	if self.message_label.text != "":
+		var tween: Tween = self.hide_message()
+		await tween.finished
 
+	self.message_label.text = message
+	var tween: Tween = get_tree().create_tween()
+	tween.tween_property(self.message_label, "modulate:a", 1.0, 0.5)
+
+
+func hide_message(fade=true):
+	if fade:
+		var tween: Tween = get_tree().create_tween()
+		tween.tween_property(self.message_label, "modulate:a", 0, 0.5)
+		return tween
+	else:
+		self.message_label.modulate.a = 0
+
+
+func level1_intro():
+	self.camera_animation_player.play("look_down")
+	self.camera_animation_player.seek(0, true)
+	self.camera_animation_player.pause()
+	self.audio_stream_player.stream = self.intro_sound
+	self.audio_stream_player.play()
+
+	self.show_message("It was his first game jam..")
+	await get_tree().create_timer(2).timeout
+	self.hide_message()
+	await get_tree().create_timer(0.5).timeout
+
+	self.show_message("Less is more.. the theme echoed in his head..")
+	await get_tree().create_timer(2.5).timeout
+	self.hide_message()
+	await get_tree().create_timer(0.5).timeout
+
+	self.show_message("Mind completely blank, he stared down at his keyboard..")
+	await get_tree().create_timer(2).timeout
+
+	self.camera_animation_player.play()
+
+	await get_tree().create_timer(1).timeout
+	self.hide_message()
+	await get_tree().create_timer(2).timeout
+
+
+func start_level(level:int):
 	if level == 1:
-		var gap: int = 6
+		await self.level1_intro()
+
+		self.show_message("Press the matching key on your keyboard")
+
+		var slow: float = 0.7
+		var normal: float = 1.0
+
+		var gap: int = 10
 		self.letters = [
-			LetterData.new("L", 0, 0 * gap),
-			LetterData.new("E", 0, 1 * gap),
-			LetterData.new("S", 0, 2 * gap),
-			LetterData.new("S", 1, 3 * gap),
-			LetterData.new("I", 1, 4 * gap),
-			LetterData.new("S", 1, 5 * gap),
-			LetterData.new("M", 2, 6 * gap),
-			LetterData.new("O", 2, 7 * gap),
-			LetterData.new("R", 2, 8 * gap),
-			LetterData.new("E", 3, 9 * gap),
+			LetterData.new("L", 1.2 * gap, normal).set_callback(self.hide_message),
+			LetterData.new("E", 2.2 * gap, normal),
+			LetterData.new("S", 3.2 * gap, normal),
+			LetterData.new("S", 4.2 * gap, normal).set_callback(self.show_message, ["Oh oh! A wild offset \"I\" key appears.\nHold down the \"I\" key, press your LEFT arrow key, then release the \"I\"."]),
+			null,
+			LetterData.new("I", 5.2 * gap, slow).set_fixed_offset(Vector2i(1, 0)).set_callback(self.show_message, ["Same for the \"S\" now, but move it DOWN.\nHold down the \"S\" key, press your DOWN arrow key, then release the \"S\"."]),
+			LetterData.new("S", 6.2 * gap, slow).set_fixed_offset(Vector2i(0, -1)).set_callback(self.hide_message),
+			null,
+			LetterData.new("M", 7.2 * gap, slow, 1),
+			LetterData.new("O", 8.2 * gap, normal, 2),
+			LetterData.new("R", 9.2 * gap, normal, 2),
+			LetterData.new("E", 10.2 * gap, normal, 2),
 		]
 #	elif level == 2:
 #		self.letters = "GOGODOTJAM"
@@ -46,7 +104,7 @@ func start_level(level:int):
 	var i: int = 0
 	var letter_count: int = 0
 	for letter_data in self.letters:
-		if letter_data.letter != " ":
+		if letter_data:
 			var keycap: Keycap = KeycapScene.instantiate()
 			keycap.type = Keycap.Types.SPELLED
 			keycap.letter = letter_data.letter
@@ -56,7 +114,10 @@ func start_level(level:int):
 			self.spelled_letters.append(keycap)
 
 			var position = self.get_random_start_position(letter_data, [])
+			if letter_data.fixed_offset:
+				position += letter_data.fixed_offset
 			var dropping_key = DroppingKeycapScene.instantiate()
+			dropping_key.time_scale = letter_data.time_scale
 			dropping_key.letter = letter_data.letter
 			dropping_key.x = position.x
 			dropping_key.y = position.y
@@ -64,6 +125,9 @@ func start_level(level:int):
 			dropping_key.letter_color = self.get_next_letter_color()
 			dropping_key.letter_locked.connect(self._on_letter_locked)
 			dropping_key.letter_destroyed.connect(self._on_letter_destroyed)
+			if letter_data.destroyed_callback:
+				dropping_key.letter_destroyed.connect(letter_data.destroyed_callback.bindv(letter_data.destroyed_callback_args))
+
 			dropping_key.start_y_position = letter_data.start_y_position
 			self.add_child(dropping_key)
 			self.active_dropping_keycaps.append(dropping_key)
@@ -71,8 +135,13 @@ func start_level(level:int):
 		else:
 			self.spelled_letters.append(null)
 		i += 1
-	$SpelledLetters.scale = Vector3(0.75, 0.75, 0.75)
+	$SpelledLetters.scale = Vector3(0.7, 0.7, 0.7)
 	$SpelledLetters.position.x -= len(self.letters) / 2.0
+
+	if level > 1:
+		%LevelIntroAnimation.play("level_start")
+		%LevelIntroAnimation.seek(0, true)
+		$LevelLabel.text = "Level %d" % level
 
 
 func _on_letter_locked(dropping_keycap: DroppingKeycap, index, success):
@@ -82,13 +151,16 @@ func _on_letter_locked(dropping_keycap: DroppingKeycap, index, success):
 	self.active_dropping_keycaps.erase(dropping_keycap)
 	self.locked_letters_tweening += 1
 
-	Engine.time_scale = DroppingKeycap.DROP_TIME * 8
+	Engine.time_scale = dropping_keycap.time_scale * 8
 
 
 func _on_letter_destroyed():
 	self.locked_letters_tweening -= 1
 	if Nodes.game.locked_letters_tweening == 0:
 		Engine.time_scale = 1.0
+		if len(self.active_dropping_keycaps) > 0:
+			var dropping_keycap: DroppingKeycap = self.active_dropping_keycaps[0]
+			Engine.time_scale = dropping_keycap.time_scale
 
 
 func get_next_letter_color():
