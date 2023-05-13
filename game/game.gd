@@ -6,6 +6,7 @@ var spelled_letters: Array = []
 var letter_colors: Array = [Color.CORNFLOWER_BLUE] #Keycap.COLOR_ORANGE, Keycap.COLOR_LIGHT_ORANGE, Keycap.COLOR_YELLOW, Keycap.COLOR_BLUE
 var letter_color_index: int = 0
 var locked_letters_tweening: int = 0
+var level: int = 0
 
 const KeycapScene = preload("res://game/keycap/keycap.tscn")
 const DroppingKeycapScene = preload("res://game/dropping_keycap.tscn")
@@ -25,7 +26,8 @@ func _ready():
 	if not Nodes.keyboard.is_ready:
 		await Nodes.keyboard_ready
 	self.hide_message(false)
-	self.start_level(2)
+
+	self.start_level(1)
 
 
 func show_message(message):
@@ -75,7 +77,8 @@ func level1_intro():
 
 
 func start_level(level:int):
-	if level == 1:
+	self.level = level
+	if self.level == 1:
 		await self.level1_intro()
 
 		self.show_message("Press the matching key on your keyboard")
@@ -98,7 +101,7 @@ func start_level(level:int):
 			LetterData.new("R", 9.2 * gap, normal, 2),
 			LetterData.new("E", 10.2 * gap, normal, 2),
 		]
-	elif level == 2:
+	elif self.level == 2:
 		var slowmo: float = 0.5
 		var slow: float = 0.7
 		var normal: float = 1.0
@@ -110,7 +113,7 @@ func start_level(level:int):
 			null,
 			LetterData.new("G", 3 * gap, normal, 3),
 			LetterData.new("O", 4 * gap, normal, 3),
-			LetterData.new("D", 5 * gap, normal, 4).set_callback(self.show_message, ["Wow, two keys on the same level!\nThey drop when you release the first key, so be smart!"]),
+			LetterData.new("D", 5 * gap, normal, 4).set_callback(self.show_message, ["Wow, two keys on the same level!\nThey both drop when you release the last key, so be smart!"]),
 			LetterData.new("O", 6 * gap, slowmo).set_fixed_offset(Vector2i(-1, 0)).set_callback(self.hide_message),
 			LetterData.new("T", 6 * gap, slowmo).set_fixed_offset(Vector2i(-1, 0)),
 			null,
@@ -118,7 +121,58 @@ func start_level(level:int):
 			LetterData.new("A", 7 * gap, slowmo).set_fixed_offset(Vector2i(1, 0)),
 			LetterData.new("M", 8 * gap, normal, 5),
 		]
-#	elif level == 2:
+	elif self.level == 3:
+		var slowmo: float = 0.5
+		var slow: float = 0.7
+		var normal: float = 1.0
+
+		var gap: int = 4
+		self.letters = [
+			LetterData.new("T", 1 * gap, normal),
+			LetterData.new("H", 2 * gap, normal),
+			LetterData.new("E", 3 * gap, normal),
+			null,
+			LetterData.new("Q", 4 * gap, normal),
+			LetterData.new("U", 5 * gap, normal),
+			LetterData.new("I", 6 * gap, normal),
+			LetterData.new("C", 7 * gap, normal),
+			LetterData.new("K", 8 * gap, normal),
+			null,
+			LetterData.new("B", 9 * gap, normal),
+			LetterData.new("R", 10 * gap, normal),
+			LetterData.new("O", 11 * gap, normal),
+			LetterData.new("W", 12 * gap, normal),
+			LetterData.new("N", 13 * gap, normal),
+			null,
+			LetterData.new("F", 14 * gap, normal),
+			LetterData.new("O", 15 * gap, normal),
+			LetterData.new("X", 16 * gap, normal),
+			null,
+			LetterData.new("J", 17 * gap, normal),
+			LetterData.new("U", 18 * gap, normal),
+			LetterData.new("M", 19 * gap, normal),
+			LetterData.new("P", 20 * gap, normal),
+			LetterData.new("S", 21 * gap, normal),
+			null,
+			LetterData.new("O", 22 * gap, normal),
+			LetterData.new("V", 23 * gap, normal),
+			LetterData.new("E", 24 * gap, normal),
+			LetterData.new("R", 25 * gap, normal),
+			null,
+			LetterData.new("T", 26 * gap, normal),
+			LetterData.new("H", 27 * gap, normal),
+			LetterData.new("E", 28 * gap, normal),
+			null,
+			LetterData.new("L", 30 * gap, normal),
+			LetterData.new("A", 31 * gap, normal),
+			LetterData.new("Z", 32 * gap, normal),
+			LetterData.new("Y", 33 * gap, normal),
+			null,
+			LetterData.new("D", 34 * gap, normal),
+			LetterData.new("O", 35 * gap, normal),
+			LetterData.new("G", 36 * gap, normal),
+		]
+#	elif self.level == 2:
 #		self.letters = "GOGODOTJAM"
 
 #.set_callback(self.show_message, ["Tip: the SPACEBAR is your joker key. Use it to move these keys individually."]),
@@ -160,7 +214,7 @@ func start_level(level:int):
 	$SpelledLetters.scale = Vector3(0.7, 0.7, 0.7)
 	$SpelledLetters.position.x -= len(self.letters) / 2.0
 
-	if level > 1:
+	if self.level > 1:
 		%LevelIntroAnimation.play("level_start")
 		%LevelIntroAnimation.seek(0, true)
 		$LevelLabel.text = "Level %d" % level
@@ -183,6 +237,11 @@ func _on_letter_destroyed():
 		if len(self.active_dropping_keycaps) > 0:
 			var dropping_keycap: DroppingKeycap = self.active_dropping_keycaps[0]
 			Engine.time_scale = dropping_keycap.time_scale
+		else:
+			if self.level < 5:
+				self.start_level(self.level + 1)
+			else:
+				get_tree().quit()  # TODO replace with goto main menu
 
 
 func get_next_letter_color():

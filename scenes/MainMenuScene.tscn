@@ -250,7 +250,8 @@ theme_override_constants/margin_top = 10
 [node name="Label" type="Label" parent="UI/CenterContainer3/Credits"]
 layout_mode = 2
 text = "
-by JumpMaybe
+by Koen Heltzel
+aka @JumpMaybe
 
 Credits:
 project template by bitbrain
