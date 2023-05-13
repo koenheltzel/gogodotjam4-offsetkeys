@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://game/keycap/keycap.gd" id="1_pc8mf"]
 [ext_resource type="ArrayMesh" uid="uid://cupqmn7wcatn5" path="res://game/keycap/keycap_model_optimized.obj" id="2_q6r6b"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gvsr7"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_t3xqf"]
 albedo_color = Color(0.980392, 0.921569, 0.843137, 1)
 backlight = Color(1, 0, 0, 1)
 
@@ -13,7 +13,7 @@ type = 1
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.054, 4.51001e-24, 1.97139e-31, 0, -2.36041e-09, 0.054, 4.51001e-24, -0.054, -2.36041e-09, 10.406, 0, 0.259)
-material_override = SubResource("StandardMaterial3D_gvsr7")
+material_override = SubResource("StandardMaterial3D_t3xqf")
 mesh = ExtResource("2_q6r6b")
 
 [node name="Label3D" type="Label3D" parent="."]

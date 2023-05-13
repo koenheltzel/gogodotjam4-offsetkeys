@@ -25,9 +25,8 @@ func _init():
 func _ready():
 	if not Nodes.keyboard.is_ready:
 		await Nodes.keyboard_ready
-	self.hide_message(false)
 
-	self.start_level(1)
+	self.start_level(4)
 
 
 func show_message(message):
@@ -77,6 +76,15 @@ func level1_intro():
 
 
 func start_level(level:int):
+	self.active_dropping_keycaps = []
+	self.spelled_letters = []
+	self.letter_color_index = 0
+	self.locked_letters_tweening = 0
+
+	self.hide_message(false)
+	while $SpelledLetters.get_child_count() > 0:
+		$SpelledLetters.remove_child($SpelledLetters.get_children()[0])
+
 	self.level = level
 	if self.level == 1:
 		await self.level1_intro()
@@ -125,52 +133,60 @@ func start_level(level:int):
 		var slowmo: float = 0.5
 		var slow: float = 0.7
 		var normal: float = 1.0
+		var fast: float = 1.3
 
-		var gap: int = 4
+		var gap: int = 10
 		self.letters = [
 			LetterData.new("T", 1 * gap, normal),
-			LetterData.new("H", 2 * gap, normal),
-			LetterData.new("E", 3 * gap, normal),
+			LetterData.new("H", 1 * gap, normal),
+			LetterData.new("I", 2 * gap, normal),
+			LetterData.new("S", 2 * gap, normal),
 			null,
-			LetterData.new("Q", 4 * gap, normal),
-			LetterData.new("U", 5 * gap, normal),
-			LetterData.new("I", 6 * gap, normal),
-			LetterData.new("C", 7 * gap, normal),
-			LetterData.new("K", 8 * gap, normal),
+			LetterData.new("I", 3 * gap, slow),
+			LetterData.new("S", 3 * gap, slow),
 			null,
-			LetterData.new("B", 9 * gap, normal),
-			LetterData.new("R", 10 * gap, normal),
-			LetterData.new("O", 11 * gap, normal),
-			LetterData.new("W", 12 * gap, normal),
-			LetterData.new("N", 13 * gap, normal),
+			LetterData.new("G", 4 * gap, fast),
+			LetterData.new("E", 5 * gap, fast),
+			LetterData.new("T", 6 * gap, fast),
+			LetterData.new("T", 7 * gap, normal),
+			LetterData.new("I", 7 * gap, normal),
+			LetterData.new("N", 8 * gap, normal),
+			LetterData.new("G", 8 * gap, normal),
 			null,
-			LetterData.new("F", 14 * gap, normal),
-			LetterData.new("O", 15 * gap, normal),
-			LetterData.new("X", 16 * gap, normal),
+			LetterData.new("T", 9 * gap, slow),
+			LetterData.new("R", 9 * gap, slow),
+			LetterData.new("I", 9 * gap, slow),
+			LetterData.new("C", 10 * gap, normal),
+			LetterData.new("K", 10 * gap, normal),
+			LetterData.new("Y", 10 * gap, normal),
+		]
+	elif self.level == 4:
+		var slowmo: float = 0.5
+		var slow: float = 0.7
+		var normal: float = 1.0
+		var fast: float = 1.3
+
+		var gap: int = 10
+		var quick_gap: int = 3
+		self.letters = [
+			LetterData.new("T", 1 * gap, normal, 1),
+			LetterData.new("H", 1 * gap, normal, 1),
+			LetterData.new("A", 1 * gap, normal, 1),
+			LetterData.new("N", 2 * gap, normal, 1),
+			LetterData.new("K", 2 * gap, normal, 2),
+			LetterData.new("S", 2 * gap, normal, 1),
 			null,
-			LetterData.new("J", 17 * gap, normal),
-			LetterData.new("U", 18 * gap, normal),
-			LetterData.new("M", 19 * gap, normal),
-			LetterData.new("P", 20 * gap, normal),
-			LetterData.new("S", 21 * gap, normal),
+			LetterData.new("F", 3 * gap, normal, 2),
+			LetterData.new("O", 3 * gap, normal, 1),
+			LetterData.new("R", 3 * gap, normal, 2),
 			null,
-			LetterData.new("O", 22 * gap, normal),
-			LetterData.new("V", 23 * gap, normal),
-			LetterData.new("E", 24 * gap, normal),
-			LetterData.new("R", 25 * gap, normal),
-			null,
-			LetterData.new("T", 26 * gap, normal),
-			LetterData.new("H", 27 * gap, normal),
-			LetterData.new("E", 28 * gap, normal),
-			null,
-			LetterData.new("L", 30 * gap, normal),
-			LetterData.new("A", 31 * gap, normal),
-			LetterData.new("Z", 32 * gap, normal),
-			LetterData.new("Y", 33 * gap, normal),
-			null,
-			LetterData.new("D", 34 * gap, normal),
-			LetterData.new("O", 35 * gap, normal),
-			LetterData.new("G", 36 * gap, normal),
+			LetterData.new("P", 4 * quick_gap, normal, 1),
+			LetterData.new("L", 5 * quick_gap, normal, 1),
+			LetterData.new("A", 6 * quick_gap, normal, 2),
+			LetterData.new("Y", 7 * quick_gap, normal, 2),
+			LetterData.new("I", 8 * quick_gap, normal, 3),
+			LetterData.new("N", 9 * quick_gap, normal, 3),
+			LetterData.new("G", 10 * quick_gap, normal, 3),
 		]
 #	elif self.level == 2:
 #		self.letters = "GOGODOTJAM"
@@ -211,8 +227,10 @@ func start_level(level:int):
 		else:
 			self.spelled_letters.append(null)
 		i += 1
-	$SpelledLetters.scale = Vector3(0.7, 0.7, 0.7)
-	$SpelledLetters.position.x -= len(self.letters) / 2.0
+
+	var scale: float = 0.7
+	$SpelledLetters.scale = Vector3(scale, scale, scale)
+	$SpelledLetters.position.x = 4.5 - len(self.letters) / 2.0 * scale
 
 	if self.level > 1:
 		%LevelIntroAnimation.play("level_start")

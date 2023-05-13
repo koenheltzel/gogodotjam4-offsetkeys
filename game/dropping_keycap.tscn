@@ -5,15 +5,15 @@
 [ext_resource type="Texture2D" uid="uid://5kepjso2syjp" path="res://game/column.png" id="3_5yui0"]
 [ext_resource type="Script" path="res://game/column.gd" id="3_rj5px"]
 
-[sub_resource type="CanvasTexture" id="CanvasTexture_6y05r"]
+[sub_resource type="CanvasTexture" id="CanvasTexture_0sau0"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nagyq"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_b8p08"]
 albedo_color = Color(0.980392, 0.921569, 0.843137, 1)
 emission = Color(1, 0.0352941, 1, 1)
 emission_energy_multiplier = 2.0
 rim = 0.43
 rim_tint = 0.34
-rim_texture = SubResource("CanvasTexture_6y05r")
+rim_texture = SubResource("CanvasTexture_0sau0")
 backlight = Color(0.266667, 0.584314, 0.658824, 1)
 
 [node name="dropping_keycap" type="Node3D"]
@@ -22,7 +22,7 @@ script = ExtResource("1_3fv0e")
 [node name="Keycap" parent="." instance=ExtResource("2_as0f4")]
 
 [node name="MeshInstance3D" parent="Keycap" index="0"]
-material_override = SubResource("StandardMaterial3D_nagyq")
+material_override = SubResource("StandardMaterial3D_b8p08")
 
 [node name="Column" type="Node3D" parent="."]
 script = ExtResource("3_rj5px")
