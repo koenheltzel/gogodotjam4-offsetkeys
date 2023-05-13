@@ -9,6 +9,8 @@ extends Node3D
 @onready var settings_button := %SettingsButton
 @onready var exit_button := %ExitButton
 @onready var game_title: MeshInstance3D = %GameTitle
+#@onready var go_godot_jam_4_logo = %GoGodotJam4Logo
+#@onready var go_godot_jam_4_theme = %GoGodotJam4Theme
 
 var next_scene = game_scene
 var new_game = true
@@ -40,6 +42,10 @@ func _process(delta):
 	var y_movement: float = (mouse_position.y - viewport_size.y) / viewport_size.y
 	self.game_title.rotation.y = x_movement * 0.1
 	self.game_title.rotation.x = y_movement * 0.1
+#	self.go_godot_jam_4_logo.rotation.y = x_movement * 0.1
+#	self.go_godot_jam_4_logo.rotation.x = y_movement * 0.1
+#	self.go_godot_jam_4_theme.rotation.y = x_movement * 0.1
+#	self.go_godot_jam_4_theme.rotation.x = y_movement * 0.1
 
 func _on_settings_button_pressed() -> void:
 	new_game = false

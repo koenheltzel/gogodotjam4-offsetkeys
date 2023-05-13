@@ -62,18 +62,23 @@ func _process(delta):
 		self.lock()
 
 
-func lock():
-	self.locked = true
-
-	var success: bool = self.letter == Nodes.keyboard.get_letter_by_position(self.x, self.y)
-	if success:
+func highlight_right_or_wrong():
+	if self.is_right_position():
 		Nodes.keyboard.get_keycap_by_position(self.x, self.y).highlight(Keycap.COLOR_GREEN)
 		self.keycap.highlight(Keycap.COLOR_GREEN)
 	else:
 		Nodes.keyboard.get_keycap_by_position(self.x, self.y).highlight(Keycap.COLOR_RED)
 		self.keycap.highlight(Keycap.COLOR_RED)
 
-	self.letter_locked.emit(self, self.letter_index, success)
+
+func is_right_position():
+	return self.letter == Nodes.keyboard.get_letter_by_position(self.x, self.y)
+
+
+func lock():
+	self.locked = true
+	self.highlight_right_or_wrong()
+	self.letter_locked.emit(self, self.letter_index, self.is_right_position())
 
 
 func _input(event):
@@ -85,7 +90,10 @@ func _input(event):
 				self.keycap.highlight(self.keycap.highlight_color)
 
 			if not self.selected and Nodes.game.is_lowest_level_dropping_keycap(self):
-				self.lock()
+				if Nodes.game.are_lowest_level_keys_all_released():
+					self.lock()
+				else:
+					self.highlight_right_or_wrong()
 
 		if not self.locked and self.selected and self.y_position >= self.CONTROL_BOTTOM and Nodes.game.is_lowest_level_dropping_keycap(self):
 			var new_x:int = self.x + 0

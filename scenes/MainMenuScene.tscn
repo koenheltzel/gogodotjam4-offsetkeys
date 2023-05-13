@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://dv2y18ye8j7o0"]
+[gd_scene load_steps=15 format=3 uid="uid://dv2y18ye8j7o0"]
 
 [ext_resource type="Script" path="res://scenes/MainMenuScene.gd" id="1_1foie"]
 [ext_resource type="PackedScene" uid="uid://cik30de5gaaah" path="res://scenes/IngameScene.tscn" id="2_nl5i6"]
@@ -7,6 +7,8 @@
 [ext_resource type="TextMesh" uid="uid://5u4p4b5ykwbh" path="res://game/levels/level_text_mesh.tres" id="4_dcj0n"]
 [ext_resource type="FontFile" uid="uid://ddpgvfbp41y6e" path="res://fonts/GeneraleStation-Regular.otf" id="4_hsa77"]
 [ext_resource type="AudioStream" uid="uid://dlchk3c1baiy8" path="res://music/corgie-title.ogg" id="6_drnm6"]
+[ext_resource type="Texture2D" uid="uid://bf8djqseued6m" path="res://scenes/mainmenu-gogodotjam.jpg" id="6_rntm5"]
+[ext_resource type="Texture2D" uid="uid://dhthpbp158qpl" path="res://scenes/mainmenu-theme.jpg" id="7_thixt"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_s5vbg"]
 metallic_specular = 0.89
@@ -164,6 +166,18 @@ light_specular = 4.0
 spot_range = 8.5
 spot_angle = 33.41
 
+[node name="GoGodotJam4Logo" type="Sprite3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(0.111, 0, 0, 0, 0.111, 0, 0, 0, 0.111, -1.3, -0.909, 0)
+visible = false
+texture = ExtResource("6_rntm5")
+
+[node name="GoGodotJam4Theme" type="Sprite3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(0.111, 0, 0, 0, 0.111, 0, 0, 0, 0.111, 1.3, -0.909, 0)
+visible = false
+texture = ExtResource("7_thixt")
+
 [node name="UI" type="CanvasLayer" parent="."]
 
 [node name="CenterContainer2" type="CenterContainer" parent="UI"]
@@ -249,3 +263,13 @@ horizontal_alignment = 1
 [node name="FadeOverlay" parent="UI" instance=ExtResource("3_kf1us")]
 unique_name_in_owner = true
 visible = false
+
+[node name="Mainmenu-gogodotjam" type="Sprite2D" parent="."]
+position = Vector2(215, 495)
+scale = Vector2(0.234, 0.234)
+texture = ExtResource("6_rntm5")
+
+[node name="Mainmenu-theme" type="Sprite2D" parent="."]
+position = Vector2(810, 495)
+scale = Vector2(0.234, 0.234)
+texture = ExtResource("7_thixt")

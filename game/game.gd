@@ -237,3 +237,9 @@ func get_first_dropping_keycap_with_letter(letter: String) -> DroppingKeycap:
 		if letter == tmp_dropping_keycap.letter:
 			return tmp_dropping_keycap
 	return null
+
+func are_lowest_level_keys_all_released() -> bool:
+	for tmp_dropping_keycap in self.active_dropping_keycaps:
+		if self.is_lowest_level_dropping_keycap(tmp_dropping_keycap) and Input.is_action_pressed(tmp_dropping_keycap.letter):
+			return false
+	return true
