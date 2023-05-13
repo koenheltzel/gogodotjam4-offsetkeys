@@ -108,7 +108,7 @@ func _input(event):
 			if event.is_action_pressed("move_up", true):
 				new_y -= 1
 
-			if not Nodes.keyboard.get_letter_by_position(new_x, new_y) in ["", " "]:
+			if not Nodes.keyboard.get_letter_by_position(new_x, new_y) in ["", " "] and not Nodes.game.is_position_taken(Vector2i(new_x, new_y)):
 				var keycap:Keycap = Nodes.keyboard.get_keycap_by_position(self.x, self.y)
 				keycap.reset_highlight()
 

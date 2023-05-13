@@ -7,6 +7,7 @@ var letter_colors: Array = [Color.CORNFLOWER_BLUE] #Keycap.COLOR_ORANGE, Keycap.
 var letter_color_index: int = 0
 var locked_letters_tweening: int = 0
 var level: int = 0
+var score: Vector2i
 
 const KeycapScene = preload("res://game/keycap/keycap.tscn")
 const DroppingKeycapScene = preload("res://game/dropping_keycap.tscn")
@@ -26,7 +27,7 @@ func _ready():
 	if not Nodes.keyboard.is_ready:
 		await Nodes.keyboard_ready
 
-	self.start_level(4)
+	self.start_level(1)
 
 
 func show_message(message):
@@ -80,14 +81,18 @@ func start_level(level:int):
 	self.spelled_letters = []
 	self.letter_color_index = 0
 	self.locked_letters_tweening = 0
+	self.score = Vector2i(0, 0)
 
 	self.hide_message(false)
 	while $SpelledLetters.get_child_count() > 0:
 		$SpelledLetters.remove_child($SpelledLetters.get_children()[0])
 
+	var retry: bool = level == self.level
+
 	self.level = level
 	if self.level == 1:
-		await self.level1_intro()
+		if not retry:
+			await self.level1_intro()
 
 		self.show_message("Press the matching key on your keyboard")
 
@@ -137,28 +142,28 @@ func start_level(level:int):
 
 		var gap: int = 10
 		self.letters = [
-			LetterData.new("T", 1 * gap, normal),
-			LetterData.new("H", 1 * gap, normal),
-			LetterData.new("I", 2 * gap, normal),
-			LetterData.new("S", 2 * gap, normal),
+			LetterData.new("T", 1 * gap, normal, 1),
+			LetterData.new("H", 1 * gap, normal, 1),
+			LetterData.new("I", 2 * gap, normal, 2),
+			LetterData.new("S", 2 * gap, normal, 1),
 			null,
-			LetterData.new("I", 3 * gap, slow),
-			LetterData.new("S", 3 * gap, slow),
+			LetterData.new("I", 3 * gap, slow, 2),
+			LetterData.new("S", 3 * gap, slow, 2),
 			null,
-			LetterData.new("G", 4 * gap, fast),
-			LetterData.new("E", 5 * gap, fast),
-			LetterData.new("T", 6 * gap, fast),
-			LetterData.new("T", 7 * gap, normal),
-			LetterData.new("I", 7 * gap, normal),
-			LetterData.new("N", 8 * gap, normal),
-			LetterData.new("G", 8 * gap, normal),
+			LetterData.new("G", 4 * gap, fast, 2),
+			LetterData.new("E", 5 * gap, fast, 3),
+			LetterData.new("T", 6 * gap, fast, 4),
+			LetterData.new("T", 7 * gap, normal, 2),
+			LetterData.new("I", 7 * gap, normal, 2),
+			LetterData.new("N", 8 * gap, normal, 2),
+			LetterData.new("G", 8 * gap, normal, 3),
 			null,
-			LetterData.new("T", 9 * gap, slow),
-			LetterData.new("R", 9 * gap, slow),
-			LetterData.new("I", 9 * gap, slow),
-			LetterData.new("C", 10 * gap, normal),
-			LetterData.new("K", 10 * gap, normal),
-			LetterData.new("Y", 10 * gap, normal),
+			LetterData.new("T", 9 * gap, slow, 2),
+			LetterData.new("R", 9 * gap, slow, 1),
+			LetterData.new("I", 9 * gap, slow, 2),
+			LetterData.new("C", 10 * gap, normal, 2),
+			LetterData.new("K", 10 * gap, normal, 2),
+			LetterData.new("Y", 10 * gap, normal, 2),
 		]
 	elif self.level == 4:
 		var slowmo: float = 0.5
@@ -166,7 +171,7 @@ func start_level(level:int):
 		var normal: float = 1.0
 		var fast: float = 1.3
 
-		var gap: int = 10
+		var gap: int = 12
 		var quick_gap: int = 3
 		self.letters = [
 			LetterData.new("T", 1 * gap, normal, 1),
@@ -180,18 +185,14 @@ func start_level(level:int):
 			LetterData.new("O", 3 * gap, normal, 1),
 			LetterData.new("R", 3 * gap, normal, 2),
 			null,
-			LetterData.new("P", 4 * quick_gap, normal, 1),
-			LetterData.new("L", 5 * quick_gap, normal, 1),
-			LetterData.new("A", 6 * quick_gap, normal, 2),
-			LetterData.new("Y", 7 * quick_gap, normal, 2),
-			LetterData.new("I", 8 * quick_gap, normal, 3),
-			LetterData.new("N", 9 * quick_gap, normal, 3),
-			LetterData.new("G", 10 * quick_gap, normal, 3),
+			LetterData.new("P", 4 * gap, normal, 1),
+			LetterData.new("L", 4.25 * gap, normal, 1),
+			LetterData.new("A", 4.50 * gap, normal, 2),
+			LetterData.new("Y", 4.75 * gap, normal, 2),
+			LetterData.new("I", 5.0 * gap, normal, 3),
+			LetterData.new("N", 5.25 * gap, normal, 3),
+			LetterData.new("G", 5.50 * gap, normal, 3),
 		]
-#	elif self.level == 2:
-#		self.letters = "GOGODOTJAM"
-
-#.set_callback(self.show_message, ["Tip: the SPACEBAR is your joker key. Use it to move these keys individually."]),
 
 	var i: int = 0
 	var letter_count: int = 0
@@ -208,6 +209,7 @@ func start_level(level:int):
 			var position = self.get_random_start_position(letter_data, [])
 			if letter_data.fixed_offset:
 				position += letter_data.fixed_offset
+
 			var dropping_key = DroppingKeycapScene.instantiate()
 			dropping_key.time_scale = letter_data.time_scale
 			dropping_key.letter = letter_data.letter
@@ -232,13 +234,18 @@ func start_level(level:int):
 	$SpelledLetters.scale = Vector3(scale, scale, scale)
 	$SpelledLetters.position.x = 4.5 - len(self.letters) / 2.0 * scale
 
-	if self.level > 1:
+	if self.level > 1 or retry:
 		%LevelIntroAnimation.play("level_start")
 		%LevelIntroAnimation.seek(0, true)
 		$LevelLabel.text = "Level %d" % level
 
 
 func _on_letter_locked(dropping_keycap: DroppingKeycap, index, success):
+	if success:
+		self.score[0] += 1
+	else:
+		self.score[1] += 1
+
 	var keycap: Keycap = self.spelled_letters[index]
 	keycap.visible = true
 	keycap.highlight(Keycap.COLOR_GREEN if success else Keycap.COLOR_RED)
@@ -256,9 +263,21 @@ func _on_letter_destroyed():
 			var dropping_keycap: DroppingKeycap = self.active_dropping_keycaps[0]
 			Engine.time_scale = dropping_keycap.time_scale
 		else:
-			if self.level < 5:
-				self.start_level(self.level + 1)
+			if self.score[1] > 3:  # More than 3 errors? Try again.
+				self.show_message("Good effort but let's try it again")
+				await get_tree().create_timer(3).timeout
+				self.hide_message()
+				await get_tree().create_timer(1.0).timeout
+				self.start_level(self.level)
+			elif self.level < 4:
+					self.show_message("Well done, on to level %d" % [self.level + 1])
+					await get_tree().create_timer(2).timeout
+					self.hide_message()
+					await get_tree().create_timer(1.0).timeout
+					self.start_level(self.level + 1)
 			else:
+				self.show_message("Thanks for playing!")
+				await get_tree().create_timer(2).timeout
 				get_tree().quit()  # TODO replace with goto main menu
 
 
@@ -299,6 +318,13 @@ func get_lowest_level():
 		if not tmp_dropping_keycap.locked and floor(tmp_dropping_keycap.y_position) < lowest_level:
 			lowest_level = floor(tmp_dropping_keycap.y_position)
 	return lowest_level
+
+
+func is_position_taken(position: Vector2i):
+	for tmp_dropping_keycap in self.active_dropping_keycaps:
+		if self.is_lowest_level_dropping_keycap(tmp_dropping_keycap) and position == Vector2i(tmp_dropping_keycap.x, tmp_dropping_keycap.y):
+			return true
+	return false
 
 
 func is_lowest_level_dropping_keycap(dropping_keycap: DroppingKeycap):

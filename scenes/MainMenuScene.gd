@@ -19,7 +19,7 @@ func _ready() -> void:
 	overlay.visible = true
 	new_game_button.disabled = game_scene == null
 	settings_button.disabled = settings_scene == null
-	continue_button.visible = SaveGame.has_save() and SaveGame.ENABLED
+	continue_button.visible = false # SaveGame.has_save() and SaveGame.ENABLED
 
 	# connect signals
 	new_game_button.pressed.connect(_on_play_button_pressed)
