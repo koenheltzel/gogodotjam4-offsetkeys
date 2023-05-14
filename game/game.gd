@@ -258,6 +258,12 @@ func _on_letter_locked(dropping_keycap: DroppingKeycap, index, success):
 	self.active_dropping_keycaps.erase(dropping_keycap)
 	self.locked_letters_tweening += 1
 
+	# Check if other letters on the same level still need to be locked as well:
+	var level: float = floor(dropping_keycap.y_position)
+	for tmp_dropping_keycap in self.active_dropping_keycaps:
+		if floor(tmp_dropping_keycap.y_position) == floor(dropping_keycap.y_position) and not tmp_dropping_keycap.locked:
+			tmp_dropping_keycap.lock()
+
 	Engine.time_scale = 8
 
 
@@ -270,13 +276,13 @@ func _on_letter_destroyed():
 			Engine.time_scale = dropping_keycap.time_scale
 		else:
 			if self.score[1] > 3:  # More than 3 errors? Try again.
-				self.show_message("Good effort but let's try it again")
+				self.show_message("Good effort, but let's try it again")
 				await get_tree().create_timer(3).timeout
 				self.hide_message()
 				await get_tree().create_timer(1.0).timeout
 				self.start_level(self.level)
 			elif self.level < 4:
-					self.show_message("Well done! On to level %d" % [self.level + 1])
+					self.show_message("Well done! On to level %d!" % [self.level + 1])
 					await get_tree().create_timer(2).timeout
 					self.hide_message()
 					await get_tree().create_timer(1.0).timeout
