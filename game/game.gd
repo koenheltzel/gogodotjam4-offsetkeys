@@ -94,20 +94,18 @@ func start_level(level:int):
 		if not retry:
 			await self.level1_intro()
 
-		self.show_message("Press the matching key on your keyboard")
-
 		var slow: float = 0.7
 		var normal: float = 1.0
 
 		var gap: int = 10
 		self.letters = [
-			LetterData.new("L", 1.2 * gap, normal).set_callback(self.hide_message),
+			LetterData.new("L", 1.2 * gap, normal).set_next_up_callback(self.show_message, ["Press the matching key on your keyboard"]).set_destroyed_callback(self.hide_message),
 			LetterData.new("E", 2.2 * gap, normal),
 			LetterData.new("S", 3.2 * gap, normal),
-			LetterData.new("S", 4.2 * gap, normal).set_callback(self.show_message, ["Oh oh! A wild offset \"I\" key appears.\nHold down the \"I\" key, press your LEFT arrow key, then release the \"I\"."]),
+			LetterData.new("S", 4.2 * gap, normal),
 			null,
-			LetterData.new("I", 5.2 * gap, slow).set_fixed_offset(Vector2i(1, 0)).set_callback(self.show_message, ["Same for the \"S\" now, but move it DOWN.\nHold down the \"S\" key, press your DOWN arrow key, then release the \"S\"."]),
-			LetterData.new("S", 6.2 * gap, slow).set_fixed_offset(Vector2i(0, -1)).set_callback(self.hide_message),
+			LetterData.new("I", 5.2 * gap, slow).set_fixed_offset(Vector2i(1, 0)).set_next_up_callback(self.show_message, ["Oh oh! A wild offset \"I\" key appears.\nHold down the \"I\" key, press your LEFT arrow key, then release the \"I\"."]),
+			LetterData.new("S", 6.2 * gap, slow).set_fixed_offset(Vector2i(0, -1)).set_next_up_callback(self.show_message, ["Same for the \"S\" now, but move it DOWN.\nHold down the \"S\" key, press your DOWN arrow key, then release the \"S\"."]).set_destroyed_callback(self.hide_message),
 			null,
 			LetterData.new("M", 7.2 * gap, slow, 1),
 			LetterData.new("O", 8.2 * gap, normal, 2),
@@ -126,8 +124,8 @@ func start_level(level:int):
 			null,
 			LetterData.new("G", 3 * gap, normal, 3),
 			LetterData.new("O", 4 * gap, normal, 3),
-			LetterData.new("D", 5 * gap, normal, 4).set_callback(self.show_message, ["Wow, two keys on the same level!\nThey both drop when you release the last key, so be smart!"]),
-			LetterData.new("O", 6 * gap, slowmo).set_fixed_offset(Vector2i(-1, 0)).set_callback(self.hide_message),
+			LetterData.new("D", 5 * gap, normal, 4),
+			LetterData.new("O", 6 * gap, slowmo).set_fixed_offset(Vector2i(-1, 0)).set_next_up_callback(self.show_message, ["Wow, two keys on the same level!\nThey both drop when you release the last key, so be smart!"]).set_destroyed_callback(self.hide_message),
 			LetterData.new("T", 6 * gap, slowmo).set_fixed_offset(Vector2i(-1, 0)),
 			null,
 			LetterData.new("J", 7 * gap, slowmo).set_fixed_offset(Vector2i(0, 1)),
@@ -221,6 +219,8 @@ func start_level(level:int):
 			dropping_key.last_keycap = i == len(self.letters) - 1
 			if letter_data.destroyed_callback:
 				dropping_key.letter_destroyed.connect(letter_data.destroyed_callback.bindv(letter_data.destroyed_callback_args))
+			if letter_data.next_up_callback:
+				dropping_key.letter_next_up.connect(letter_data.next_up_callback.bindv(letter_data.next_up_callback_args))
 
 			dropping_key.start_y_position = letter_data.start_y_position
 			self.dropping_keycaps_container.add_child(dropping_key)
@@ -229,6 +229,8 @@ func start_level(level:int):
 		else:
 			self.spelled_letters.append(null)
 		i += 1
+
+	self.new_first_dropping_keycap()
 
 	var scale: float = 0.7
 	$SpelledLetters.scale = Vector3(scale, scale, scale)
@@ -263,13 +265,17 @@ func _on_letter_locked(dropping_keycap: DroppingKeycap, index, success):
 	Engine.time_scale = 8
 
 
+func new_first_dropping_keycap():
+	var dropping_keycap: DroppingKeycap = self.active_dropping_keycaps[0]
+	Engine.time_scale = dropping_keycap.time_scale
+	dropping_keycap.letter_next_up.emit()
+
 func _on_letter_destroyed():
 	self.locked_letters_tweening -= 1
 	if Nodes.game.locked_letters_tweening == 0:
 		Engine.time_scale = 1.0
 		if len(self.active_dropping_keycaps) > 0:
-			var dropping_keycap: DroppingKeycap = self.active_dropping_keycaps[0]
-			Engine.time_scale = dropping_keycap.time_scale
+			self.new_first_dropping_keycap()
 		else:
 			if self.score[1] > 3:  # More than 3 errors? Try again.
 				self.show_message("Good effort, but let's try it again")

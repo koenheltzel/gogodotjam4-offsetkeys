@@ -1,6 +1,7 @@
 class_name DroppingKeycap
 extends Node3D
 
+signal letter_next_up(dropping_keycap: DroppingKeycap)
 signal letter_locked(dropping_keycap: DroppingKeycap, index: int, success: bool)
 signal letter_destroyed()
 @onready var keycap: Keycap = $Keycap
