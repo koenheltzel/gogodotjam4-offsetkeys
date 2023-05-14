@@ -37,6 +37,8 @@ func _ready():
 	self.column.alpha = 0  # Set to fully transparent before setting y_position (because its setter uses the alpha value).
 	self.y_position = self.start_y_position
 
+	self._process(0)  # Set the correct x/z position, if we don't do this it will show on 0, 0 for 1 frame.
+
 	var tween = self.get_tree().create_tween()
 	var tmp_y_position = self.y_position
 	for i in range(self.y_position + 1):

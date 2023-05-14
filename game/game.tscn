@@ -233,6 +233,7 @@ transform = Transform3D(0.412266, 0.53015, -0.740931, 0.0529982, 0.797927, 0.600
 
 [node name="LevelLabel" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.656309, 0.754492, 0, -0.754492, 0.656309, -12, 5.6, -1.639)
+sorting_offset = 20.0
 text = "Level 1"
 font = ExtResource("3_v7tgo")
 font_size = 200
@@ -244,6 +245,7 @@ libraries = {
 "": SubResource("AnimationLibrary_4lpdv")
 }
 
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+[node name="IntroSound" type="AudioStreamPlayer" parent="."]
 unique_name_in_owner = true
 stream = ExtResource("5_3kx2c")
+volume_db = -6.0

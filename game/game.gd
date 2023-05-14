@@ -14,11 +14,9 @@ const DroppingKeycapScene = preload("res://game/dropping_keycap.tscn")
 var active_dropping_keycaps: Array[DroppingKeycap] = []
 
 @onready var message_label: Label = %MessageLabel
-@onready var audio_stream_player = %AudioStreamPlayer
+@onready var intro_sound: AudioStreamPlayer = %IntroSound
 @onready var camera_animation_player: AnimationPlayer = %CameraAnimationPlayer
 @onready var dropping_keycaps_container = %DroppingKeycapsContainer
-
-var intro_sound = preload("res://game/intro.ogg")
 
 func _init():
 	Nodes.game = self
@@ -28,7 +26,7 @@ func _ready():
 	if not Nodes.keyboard.is_ready:
 		await Nodes.keyboard_ready
 
-	self.start_level(2)
+	self.start_level(1)
 
 
 func show_message(message):
@@ -54,8 +52,7 @@ func level1_intro():
 	self.camera_animation_player.play("look_down")
 	self.camera_animation_player.seek(0, true)
 	self.camera_animation_player.pause()
-	self.audio_stream_player.stream = self.intro_sound
-	self.audio_stream_player.play()
+	self.intro_sound.play()
 
 	self.show_message("It was his first game jam..")
 	await get_tree().create_timer(2).timeout
@@ -169,8 +166,7 @@ func start_level(level:int):
 			LetterData.new("Y", 10 * gap, normal, 2),
 		]
 	elif self.level == 4:
-		var slowmo: float = 0.5
-		var slow: float = 0.7
+		var slow: float = 0.9
 		var normal: float = 1.0
 		var fast: float = 1.3
 
@@ -188,13 +184,13 @@ func start_level(level:int):
 			LetterData.new("O", 3 * gap, normal, 1),
 			LetterData.new("R", 3 * gap, normal, 2),
 			null,
-			LetterData.new("P", 4 * gap, normal, 1),
-			LetterData.new("L", 4.25 * gap, normal, 1),
-			LetterData.new("A", 4.50 * gap, normal, 2),
-			LetterData.new("Y", 4.75 * gap, normal, 2),
-			LetterData.new("I", 5.0 * gap, normal, 3),
-			LetterData.new("N", 5.25 * gap, normal, 3),
-			LetterData.new("G", 5.50 * gap, normal, 3),
+			LetterData.new("P", 3.75 * gap, slow, 1),
+			LetterData.new("L", 4.00 * gap, slow, 1),
+			LetterData.new("A", 4.25 * gap, slow, 2),
+			LetterData.new("Y", 4.50 * gap, slow, 2),
+			LetterData.new("I", 4.75 * gap, slow, 3),
+			LetterData.new("N", 5.00 * gap, slow, 3),
+			LetterData.new("G", 5.25 * gap, slow, 3),
 		]
 
 	var i: int = 0
