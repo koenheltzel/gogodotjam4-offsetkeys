@@ -112,14 +112,14 @@ func _input(event):
 				new_y -= 1
 
 			if not Nodes.keyboard.get_letter_by_position(new_x, new_y) in ["", " "] and not Nodes.game.is_position_taken(Vector2i(new_x, new_y)):
-				var keycap:Keycap = Nodes.keyboard.get_keycap_by_position(self.x, self.y)
-				keycap.reset_highlight()
+				var keyboard_keycap:Keycap = Nodes.keyboard.get_keycap_by_position(self.x, self.y)
+				keyboard_keycap.reset_highlight()
 
 				self.x = new_x
 				self.y = new_y
 
-				keycap = Nodes.keyboard.get_keycap_by_position(self.x, self.y)
-				if keycap.letter == self.letter:
-					keycap.highlight(Keycap.COLOR_GREEN)
-				else:
-					keycap.highlight(Keycap.COLOR_RED)
+			var keyboard_keycap:Keycap = Nodes.keyboard.get_keycap_by_position(self.x, self.y)
+			if keyboard_keycap.letter == self.letter:
+				keyboard_keycap.highlight(Keycap.COLOR_GREEN)
+			else:
+				keyboard_keycap.highlight(Keycap.COLOR_RED)
