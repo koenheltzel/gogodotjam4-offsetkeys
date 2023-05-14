@@ -51,4 +51,4 @@ text = "settings"
 [node name="ExitButton" type="Button" parent="VBoxContainer3/MenuContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "leave_game"
+text = "Quit"
