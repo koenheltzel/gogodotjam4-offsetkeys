@@ -1,5 +1,4 @@
 extends Node3D
-@onready var drop_sound_player: AudioStreamPlayer = %DropSoundPlayer
 
 var drop_sound: int = 1
 
