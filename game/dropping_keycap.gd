@@ -19,6 +19,7 @@ var selected: bool = false
 var locked: bool = false
 var time_tween: Tween
 var start_y_position: int = 0
+var last_keycap: bool = false
 var time_scale: float
 var y_position: float:
 	get:
@@ -39,6 +40,8 @@ func _ready():
 	var tween = self.get_tree().create_tween()
 	var tmp_y_position = self.y_position
 	for i in range(self.y_position + 1):
+		if self.last_keycap:
+			tween.tween_callback(Sound.play_drop_sound)
 		tween.tween_property(self, "y_position", tmp_y_position, self.DROP_TIME).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
 		tmp_y_position = tmp_y_position - 1.0
 	tween.tween_interval(0.25)

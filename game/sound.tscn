@@ -1,0 +1,50 @@
+[gd_scene load_steps=8 format=3 uid="uid://cyvnl8sq5ln6p"]
+
+[ext_resource type="Script" path="res://game/sound.gd" id="1_01axg"]
+[ext_resource type="AudioStream" uid="uid://djjteogqnj7vk" path="res://music/please-calm-my-mind-125566.mp3" id="1_jrjyj"]
+[ext_resource type="AudioStream" uid="uid://dty83qsy7fqnk" path="res://music/Cloth_04b.wav" id="3_81nmj"]
+[ext_resource type="AudioStream" uid="uid://c721atme1qh05" path="res://music/Cloth_07b.wav" id="3_dbf1r"]
+[ext_resource type="AudioStream" uid="uid://dl367p2e1vsw8" path="res://music/Cloth_05b.wav" id="4_q58cv"]
+[ext_resource type="AudioStream" uid="uid://87mkhr7tu5a8" path="res://music/misc_menu_2.wav" id="6_idx2j"]
+[ext_resource type="AudioStream" uid="uid://bixolm78gs1q8" path="res://music/misc_menu_3.wav" id="7_n8ci1"]
+
+[node name="Sound" type="Node3D"]
+script = ExtResource("1_01axg")
+
+[node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("1_jrjyj")
+volume_db = 3.0
+autoplay = true
+bus = &"Music"
+
+[node name="DropSound1" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("3_81nmj")
+volume_db = -9.0
+bus = &"Sound"
+
+[node name="DropSound2" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("4_q58cv")
+volume_db = -9.0
+bus = &"Sound"
+
+[node name="DropSound3" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("3_dbf1r")
+volume_db = -9.0
+bus = &"Sound"
+
+[node name="RightSound" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("6_idx2j")
+volume_db = -6.0
+pitch_scale = 1.3
+bus = &"Sound"
+
+[node name="WrongSound" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("7_n8ci1")
+volume_db = -6.0
+bus = &"Sound"

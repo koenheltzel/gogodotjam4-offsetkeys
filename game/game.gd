@@ -16,6 +16,7 @@ var active_dropping_keycaps: Array[DroppingKeycap] = []
 @onready var message_label: Label = %MessageLabel
 @onready var audio_stream_player = %AudioStreamPlayer
 @onready var camera_animation_player: AnimationPlayer = %CameraAnimationPlayer
+@onready var dropping_keycaps_container = %DroppingKeycapsContainer
 
 var intro_sound = preload("res://game/intro.ogg")
 
@@ -27,7 +28,7 @@ func _ready():
 	if not Nodes.keyboard.is_ready:
 		await Nodes.keyboard_ready
 
-	self.start_level(1)
+	self.start_level(2)
 
 
 func show_message(message):
@@ -84,6 +85,8 @@ func start_level(level:int):
 	self.score = Vector2i(0, 0)
 
 	self.hide_message(false)
+	while self.dropping_keycaps_container.get_child_count() > 0:
+		self.dropping_keycaps_container.remove_child(self.dropping_keycaps_container.get_children()[0])
 	while $SpelledLetters.get_child_count() > 0:
 		$SpelledLetters.remove_child($SpelledLetters.get_children()[0])
 
@@ -219,11 +222,12 @@ func start_level(level:int):
 			dropping_key.letter_color = self.get_next_letter_color()
 			dropping_key.letter_locked.connect(self._on_letter_locked)
 			dropping_key.letter_destroyed.connect(self._on_letter_destroyed)
+			dropping_key.last_keycap = i == len(self.letters) - 1
 			if letter_data.destroyed_callback:
 				dropping_key.letter_destroyed.connect(letter_data.destroyed_callback.bindv(letter_data.destroyed_callback_args))
 
 			dropping_key.start_y_position = letter_data.start_y_position
-			self.add_child(dropping_key)
+			self.dropping_keycaps_container.add_child(dropping_key)
 			self.active_dropping_keycaps.append(dropping_key)
 			letter_count += 1
 		else:
@@ -241,6 +245,8 @@ func start_level(level:int):
 
 
 func _on_letter_locked(dropping_keycap: DroppingKeycap, index, success):
+	Sound.play_letter_sound(success)
+
 	if success:
 		self.score[0] += 1
 	else:
@@ -270,7 +276,7 @@ func _on_letter_destroyed():
 				await get_tree().create_timer(1.0).timeout
 				self.start_level(self.level)
 			elif self.level < 4:
-					self.show_message("Well done, on to level %d" % [self.level + 1])
+					self.show_message("Well done! On to level %d" % [self.level + 1])
 					await get_tree().create_timer(2).timeout
 					self.hide_message()
 					await get_tree().create_timer(1.0).timeout
@@ -308,7 +314,7 @@ func get_random_start_position(letter_data: LetterData, already_taken: Array):
 			new_position.x = new_position.x + y_movement * (1 if randi_range(0, 1) == 1 else -1)
 
 			var start_letter:String = Nodes.keyboard.get_letter_by_position(new_position.x, new_position.y)
-			if not start_letter in ["", " "] and new_position != old_position:
+			if not start_letter in ["", " "] and new_position != old_position and not self.is_position_taken(new_position):
 				return new_position
 
 
